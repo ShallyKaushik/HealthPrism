@@ -1,0 +1,158 @@
+/* frontend/src/components/StressCoach.css */
+
+.stress-coach-card {
+  background-color: var(--color-bg-white);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.07);
+  overflow: hidden;
+  margin-bottom: 60px; /* Space between coach and static content */
+}
+
+.coach-header {
+  padding: 32px;
+  text-align: center;
+  /* AI-themed purple gradient */
+  background: linear-gradient(135deg, var(--color-accent) 0%, #a855f7 100%);
+  color: white;
+}
+
+.coach-header h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+}
+
+.coach-header p {
+  font-size: 1rem;
+  margin: 0;
+  opacity: 0.9;
+}
+
+/* --- The Form --- */
+.coach-form {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.coach-form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-light);
+}
+
+.coach-form select {
+  margin-top: 8px;
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  font-family: 'Manrope', 'Inter', sans-serif;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-sizing: border-box; 
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.coach-form select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
+}
+
+.generate-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  background-color: var(--color-accent); /* Our "AI purple" */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 16px;
+  transition: all 0.2s ease;
+}
+
+.generate-button:hover {
+  background-color: #8628d9; /* Darker purple */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(147, 51, 234, 0.3);
+}
+
+.generate-button:disabled {
+  background-color: #9CA3AF;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* --- The Result --- */
+.coach-result {
+  padding: 0 32px 32px 32px;
+}
+
+.coach-result h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 12px;
+}
+
+.coach-error {
+  text-align: center;
+  padding: 0 32px 32px 32px;
+  font-weight: 500;
+  color: #e74c3c; /* Red error color */
+}
+
+/* --- Styles for Markdown --- */
+.coach-plan-markdown {
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 20px;
+  font-family: 'Manrope', 'Inter', sans-serif;
+  font-size: 0.95rem;
+  color: var(--color-text-light);
+  line-height: 1.7;
+}
+
+.coach-plan-markdown h1, 
+.coach-plan-markdown h2, 
+.coach-plan-markdown h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-accent); /* Purple! */
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+.coach-plan-markdown h1:first-child {
+  margin-top: 0;
+}
+
+.coach-plan-markdown ul {
+  padding-left: 20px;
+  margin: 0;
+}
+
+.coach-plan-markdown li {
+  margin-bottom: 8px;
+}
+
+.coach-plan-markdown p {
+  margin-top: 16px;
+}

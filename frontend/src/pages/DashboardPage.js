@@ -4,28 +4,55 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './DashboardPage.css'; 
 
-// We'll use Font Awesome icons from the 'react-icons' library
-// If you haven't installed it: npm install react-icons
+// --- 1. IMPORT WHAT YOU NEED ---
+import { usePrediction } from '../context/PredictionContext'; // Your "global brain"
+import ResultCard from '../components/ResultCard';          // Your beautiful result card
 import { 
   FaStar, FaRegEdit, FaBrain, FaSeedling, 
   FaHeartbeat, FaAppleAlt, FaMoon, FaCommentDots, FaBell 
 } from 'react-icons/fa';
 
-// This is a great placeholder illustration from storyset.com (as per your plan)
-// You can download your own and import it from your 'assets' folder
-import heroIllustration from '../assets/health.jpeg';
+// Your existing illustration import
+const heroIllustration = "https://firebasestorage.googleapis.com/v0/b/handy-f131a.appspot.com/o/storyset%2FDoctor-amico.svg?alt=media&token=855e712c-238d-42de-8e6d-7c645d064c1c";
 
 function DashboardPage() {
+  
+  // --- 2. GET THE LATEST PREDICTION FROM THE "BRAIN" ---
+  const { latestPrediction } = usePrediction();
+
   return (
     <div className="homepage-container">
       
-      {/* --- 1. HERO SECTION (Updated) --- */}
+      {/* --- 3. NEW DYNAMIC WELCOME BANNER --- */}
+      <section className="dynamic-welcome-section">
+        {latestPrediction === null ? (
+          // --- STATE 1: NO PREDICTION YET ---
+          <div className="welcome-prompt-card">
+            <h2>Welcome to HeartHealth!</h2>
+            <p>You haven't taken a prediction yet. Get your free, anonymous heart risk score in just 2 minutes.</p>
+            <Link to="/predict" className="hero-button-primary">
+              Get Started Now
+            </Link>
+          </div>
+        ) : (
+          // --- STATE 2: PREDICTION EXISTS ---
+          <div className="welcome-result-card">
+            <div className="welcome-result-header">
+              <h2>Welcome Back!</h2>
+              <p>Here is your most recent prediction, stored securely on this device. You can use this score to generate a personalized nutrition plan.</p>
+            </div>
+            {/* We re-use the SAME result card from the predictor page! */}
+            <ResultCard probability={latestPrediction} />
+          </div>
+        )}
+      </section>
+      
+      {/* --- 4. HERO SECTION (Your existing content) --- */}
       <section className="hero-section">
         <div className="hero-content">
           <h1 className="hero-headline">
             Understand Your Heart Health. Instantly.
           </h1>
-          {/* This is your new subheading */}
           <p className="hero-subheading">
             AI-powered insights for your heart, mind, and body. Personalized
             recommendations that adapt to your health data.
@@ -38,14 +65,14 @@ function DashboardPage() {
         </div>
         <div className="hero-image-container">
           <img 
-            src={heroIllustration}
+            src={heroIllustration} 
             alt="AI Health Assistant" 
             className="hero-image"
           />
         </div>
       </section>
 
-      {/* --- 2. HOW IT WORKS SECTION (New) --- */}
+      {/* --- 5. HOW IT WORKS SECTION (Your existing content) --- */}
       <section className="how-it-works-section">
         <h2 className="section-heading">How It Works</h2>
         <p className="section-subheading">Get your personalized plan in three simple steps.</p>
@@ -72,7 +99,7 @@ function DashboardPage() {
         </div>
       </section>
 
-      {/* --- 3. OUR FEATURES SECTION (New) --- */}
+      {/* --- 6. FEATURES SECTION (Your existing content) --- */}
       <section className="features-section">
         <h2 className="section-heading">A Complete Health Assistant</h2>
         <p className="section-subheading">One platform for all your proactive health needs.</p>
@@ -111,7 +138,7 @@ function DashboardPage() {
         </div>
       </section>
 
-      {/* --- 4. SOCIAL PROOF SECTION (Your existing stats cards) --- */}
+      {/* --- 7. SOCIAL PROOF SECTION (Your existing content) --- */}
       <section className="social-proof-section">
         <div className="stat-card">
           <h3><FaStar style={{color: '#f1c40f'}} /> 4.9*</h3>

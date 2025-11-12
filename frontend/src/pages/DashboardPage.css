@@ -23,6 +23,92 @@
   text-align: center;
   margin: 0 auto 48px auto;
 }
+/* frontend/src/pages/DashboardPage.css */
+
+/* --- 1. NEW DYNAMIC WELCOME STYLES --- */
+.dynamic-welcome-section {
+  width: 100%;
+  max-width: 1280px;
+  padding: 40px 24px 0 24px; /* Add padding */
+  box-sizing: border-box; /* Ensures padding is included */
+}
+
+/* Style for the "Get Started" prompt */
+.welcome-prompt-card {
+  text-align: center;
+  background: var(--gradient-ai); /* Use the AI gradient */
+  color: white;
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 10px 30px rgba(147, 51, 234, 0.2);
+}
+.welcome-prompt-card h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 16px 0;
+}
+.welcome-prompt-card p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  margin: 0 0 24px 0;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+/* Re-use the hero button style, but make it white */
+.welcome-prompt-card .hero-button-primary {
+  background: var(--color-bg-white);
+  color: var(--color-primary);
+  border: 1px solid var(--color-bg-white);
+}
+.welcome-prompt-card .hero-button-primary:hover {
+  background: #f0f0f0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+
+/* Style for the "Welcome Back" result */
+.welcome-result-card {
+  background: var(--color-bg-white);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.07);
+  overflow: hidden; /* To contain the ResultCard */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center everything */
+}
+.welcome-result-header {
+  text-align: center;
+  padding: 32px 32px 0 32px;
+}
+.welcome-result-header h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 16px 0;
+  color: var(--color-text);
+}
+.welcome-result-header p {
+  font-size: 1.1rem;
+  color: var(--color-text-light);
+  max-width: 600px;
+  margin: 0 auto 24px auto;
+}
+/* This contains the ResultCard itself */
+.welcome-result-card .result-card {
+  /* Overrides to embed it cleanly */
+  width: 100%;
+  box-shadow: none;
+  border-top: 1px solid var(--color-border);
+  border-radius: 0;
+  background-color: var(--color-bg);
+}
+
+
+/* --- 2. EXISTING STYLES --- */
+/* (All your .homepage-container, .hero-section, .how-it-works-section,
+   .features-section, and .social-proof-section styles go here, unchanged) */
 /* Standard container for all sections */
 .hero-section, 
 .how-it-works-section, 

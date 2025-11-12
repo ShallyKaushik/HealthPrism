@@ -2,62 +2,24 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import './ChatbotPage.css'; // We will create this
-import { FaHeartbeat, FaAppleAlt, FaMoon, FaCommentDots, FaBell } from 'react-icons/fa';
+import './ChatbotPage.css'; // We'll update this next
+import { FaCommentDots, FaPaperPlane } from 'react-icons/fa';
+import axios from 'axios'; // We'll use this to talk to the backend
 
-// 1. THE CHATBOT'S "BRAIN" (Our Script)
-const chatScript = {
-  '1': {
-    message: 'Hi there! I\'m HealthBot, your AI health assistant. What\'s on your mind?',
-    options: [
-      { text: 'What does "heart risk" mean?', trigger: '3' },
-      { text: 'What is "cholesterol"?', trigger: '4' },
-      { text: 'What does "cp" (chest pain) mean?', trigger: '5' },
-      { text: 'Give me a health tip!', trigger: '6' },
-      { text: 'Take me to the predictor', trigger: '7' },
-    ],
-  },
-  '3': {
-    message: '"Heart risk" is a percentage that estimates your chance of developing cardiovascular issues. Our AI model calculates this based on your health metrics. It\'s a tool to help you stay proactive!',
-    trigger: 'more_options',
-  },
-  '4': {
-    message: 'Cholesterol is a waxy substance found in your blood. While your body needs it, too much "bad" cholesterol (LDL) can build up and increase your risk of heart disease.',
-    trigger: 'more_options',
-  },
-  '5': {
-    message: '"cp" stands for Chest Pain Type. Our model uses this as a key factor. Type 0 is "Typical Angina" (a strong risk signal), while Type 3 is "Asymptomatic" (no symptoms).',
-    trigger: 'more_options',
-  },
-  '6': {
-    message: 'Here\'s a simple tip: Aim for at least 30 minutes of moderate activity, like a brisk walk, most days of the week. Your heart will thank you!',
-    trigger: 'more_options',
-  },
-  '7': {
-    message: 'Sure! Here is the link to the predictor page.',
-    component: <Link to="/predict" className="chatbot-link">Go to Predictor</Link>,
-    trigger: 'more_options',
-  },
-  'more_options': {
-    message: 'Can I help with anything else?',
-    trigger: '2', // Go back to main options (re-using step 2)
-  },
-  '2': { // Re-using step 2 ID for the loop
-    options: [
-      { text: 'What does "heart risk" mean?', trigger: '3' },
-      { text: 'What is "cholesterol"?', trigger: '4' },
-      { text: 'What does "cp" (chest pain) mean?', trigger: '5' },
-      { text: 'Give me a health tip!', trigger: '6' },
-      { text: 'Take me to the predictor', trigger: '7' },
-    ],
-  }
-};
-
-// 2. THE CHATBOT COMPONENT
+// 1. THE CHATBOT COMPONENT (Rebuilt for Generative AI)
 function ChatbotPage() {
-  const [messages, setMessages] = useState([]);
-  const [currentStep, setCurrentStep] = useState('1');
-  const [options, setOptions] = useState(chatScript['1'].options || []);
+  // State to hold the full conversation history
+  const [messages, setMessages] = useState([
+    {
+      from: 'bot',
+      text: "Hi there! I'm HealthBot, your AI health assistant. How can I help you today? You can ask me about heart health, nutrition, or stress."
+    }
+  ]);
+  // State for the user's current typed message
+  const [input, setInput] = useState('');
+  // State for the "Bot is typing..." indicator
+  const [isLoading, setIsLoading] = useState(false);
+  
   const chatEndRef = useRef(null);
 
   // Scroll to the bottom when new messages are added
@@ -65,32 +27,38 @@ function ChatbotPage() {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Start the chat on first render
-  useEffect(() => {
-    setMessages([{ from: 'bot', text: chatScript['1'].message }]);
-  }, []);
+  // 2. THE HANDLE SUBMIT FUNCTION
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (input.trim() === '') return;
 
-  const handleOptionClick = (option) => {
-    // 1. Add user's choice as a message
-    const userMessage = { from: 'user', text: option.text };
+    const userMessage = { from: 'user', text: input };
     
-    // 2. Get the bot's response from the script
-    const nextStep = chatScript[option.trigger];
-    const botMessages = [];
+    // Add user message to history and show "typing..."
+    setMessages(prevMessages => [...prevMessages, userMessage]);
+    setIsLoading(true);
+    setInput(''); // Clear the input box
 
-    if (nextStep.message) {
-      botMessages.push({ from: 'bot', text: nextStep.message });
+    try {
+      // 3. SEND TO BACKEND (This will fail until we build Phase 2)
+      // We send the *entire* message history for context
+      const response = await axios.post(
+        'http://127.0.0.1:5000/api/chatbot', 
+        { messages: [...messages, userMessage] }
+      );
+      
+      // 4. RECEIVE FROM BACKEND
+      const botMessage = { from: 'bot', text: response.data.answer };
+      setMessages(prevMessages => [...prevMessages, botMessage]);
+
+    } catch (err) {
+      console.error("Error calling chatbot API:", err);
+      // If the API call fails, show an error message in the chat
+      const errorMessage = { from: 'bot', text: "Sorry, I'm having a little trouble thinking right now. Please try again later." };
+      setMessages(prevMessages => [...prevMessages, errorMessage]);
+    } finally {
+      setIsLoading(false); // Stop the "typing..." indicator
     }
-    if (nextStep.component) {
-      botMessages.push({ from: 'bot', component: nextStep.component });
-    }
-    
-    // 3. Update the messages list
-    setMessages([...messages, userMessage, ...botMessages]);
-    
-    // 4. Update the next set of options
-    const nextOptionsStep = chatScript[nextStep.trigger];
-    setOptions(nextOptionsStep.options || []);
   };
 
   return (
@@ -107,26 +75,36 @@ function ChatbotPage() {
           {messages.map((msg, index) => (
             <div key={index} className={`chat-bubble-container ${msg.from}`}>
               <div className={`chat-bubble`}>
-                {msg.text && <p>{msg.text}</p>}
-                {msg.component && <div>{msg.component}</div>}
+                <p>{msg.text}</p>
               </div>
             </div>
           ))}
+
+          {/* This is the "Bot is typing..." indicator */}
+          {isLoading && (
+            <div className="chat-bubble-container bot">
+              <div className="chat-bubble typing-indicator">
+                <span></span><span></span><span></span>
+              </div>
+            </div>
+          )}
+
           <div ref={chatEndRef} />
         </div>
         
-        {/* Options */}
-        <div className="chatbot-options">
-          {options.map((option, index) => (
-            <button 
-              key={index} 
-              className="chatbot-option-button" 
-              onClick={() => handleOptionClick(option)}
-            >
-              {option.text}
-            </button>
-          ))}
-        </div>
+        {/* 4. THE NEW INPUT FORM */}
+        <form className="chatbot-input-form" onSubmit={handleSubmit}>
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Ask about heart health, nutrition..."
+            aria-label="Type your message"
+          />
+          <button type="submit" aria-label="Send message" disabled={isLoading}>
+            <FaPaperPlane />
+          </button>
+        </form>
       </div>
     </div>
   );

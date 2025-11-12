@@ -1,7 +1,10 @@
-import React from 'react';
-import './ResultCard.css'; // We will create this CSS file next
+// frontend/src/components/ResultCard.js
 
-// This is the helper function with all the 5-level logic
+import React, { useState } from 'react';
+import './ResultCard.css';
+import { FaMapMarkerAlt } from 'react-icons/fa'; // <-- 1. IMPORT NEW ICON
+
+// This function is the "brain" of the component
 const getRiskDetails = (probability) => {
   const probPercent = probability * 100;
 
@@ -9,7 +12,7 @@ const getRiskDetails = (probability) => {
     return {
       level: 'Critical Risk',
       message: 'Your results indicate a critical risk. Please consult a medical professional immediately.',
-      style: 'risk-critical', // This is used by the CSS
+      style: 'risk-critical', // We use this to show the button
     };
   }
   if (probPercent > 70) {
@@ -43,12 +46,42 @@ const getRiskDetails = (probability) => {
 
 // This is the component itself
 function ResultCard({ probability }) {
-  // Get the details object
+  // --- 2. ADD NEW STATE FOR GEOLOCATION ERRORS ---
+  const [geoError, setGeoError] = useState(null);
+  
   const riskDetails = getRiskDetails(probability);
   const probabilityPercent = (probability * 100).toFixed(2);
 
+  // --- 3. ADD NEW FUNCTION TO FIND A DOCTOR ---
+  const handleFindDoctor = () => {
+    setGeoError(null); // Clear any old errors
+    
+    // Check if the browser supports Geolocation
+    if (!navigator.geolocation) {
+      setGeoError("Geolocation is not supported by your browser.");
+      return;
+    }
+
+    // Ask the user for their location
+    navigator.geolocation.getCurrentPosition(
+      // Success callback:
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        // Create a Google Maps URL to search for "doctors near me"
+        const googleMapsUrl = `https://www.google.com/maps/search/doctors+near+me/@${latitude},${longitude},15z`;
+        
+        // Open this URL in a new tab
+        window.open(googleMapsUrl, '_blank');
+      },
+      // Error callback:
+      (err) => {
+        setGeoError("Unable to get your location. Please check your browser's permissions and try again.");
+      }
+    );
+  };
+  
   return (
-    // We apply the dynamic style (e.g., 'risk-low') to the whole card
+    // We use the dynamic style here
     <div className={`result-card ${riskDetails.style}`}>
       <h3>Prediction Result</h3>
       <p className="probability">
@@ -56,11 +89,22 @@ function ResultCard({ probability }) {
       </p>
       <p>Probability of High Risk</p>
       
-      {/* This is the new, dynamic part */}
       <div className="risk-level-display">
         {riskDetails.level}
       </div>
       <p className="risk-message">{riskDetails.message}</p>
+
+      {/* --- 4. NEW: EMERGENCY ALERT BUTTON --- */}
+      {/* This block ONLY renders if the risk is 'risk-critical' */}
+      {riskDetails.style === 'risk-critical' && (
+        <div className="emergency-button-container">
+          <button className="emergency-button" onClick={handleFindDoctor}>
+            <FaMapMarkerAlt /> Find a Doctor Near You
+          </button>
+          {/* Show an error if geolocation fails */}
+          {geoError && <p className="geo-error">{geoError}</p>}
+        </div>
+      )}
     </div>
   );
 }

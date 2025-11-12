@@ -1,0 +1,115 @@
+/* frontend/src/pages/AuthForm.css */
+
+/* --- Styles for Login & Register Pages --- */
+
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 24px;
+  /* Fill space minus navbar/footer */
+  min-height: calc(100vh - 200px); 
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 450px;
+  background-color: var(--color-bg-white);
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.07);
+  overflow: hidden;
+}
+
+.auth-header {
+  padding: 40px 40px 24px 40px;
+  text-align: center;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.auth-header h1 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 8px 0;
+}
+
+.auth-header p {
+  font-size: 1rem;
+  color: var(--color-text-light);
+  margin: 0;
+}
+
+.auth-header p a {
+  color: var(--color-primary);
+  font-weight: 500;
+  text-decoration: none;
+}
+.auth-header p a:hover {
+  text-decoration: underline;
+}
+
+.auth-form {
+  padding: 32px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.auth-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-form-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-light);
+  margin-bottom: 8px;
+}
+
+.auth-form-group input {
+  padding: 14px;
+  font-size: 1rem;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.auth-form-group input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.auth-button {
+  padding: 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  background-color: var(--color-primary);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.auth-button:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.auth-button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.auth-error {
+  color: #e74c3c;
+  background-color: #fbeae9;
+  border: 1px solid #e74c3c;
+  border-radius: 8px;
+  padding: 14px;
+  text-align: center;
+  font-size: 0.9rem;
+}

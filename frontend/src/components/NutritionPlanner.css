@@ -1,0 +1,180 @@
+/* frontend/src/components/NutritionPlanner.css */
+
+.nutrition-planner-card {
+  background-color: var(--color-bg-white);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.07);
+  overflow: hidden;
+  margin-bottom: 60px; /* Space between planner and static content */
+}
+
+.planner-header {
+  padding: 32px;
+  text-align: center;
+  background: var(--gradient-ai);
+  color: white;
+}
+
+.planner-header h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+}
+
+.planner-header p {
+  font-size: 1rem;
+  margin: 0;
+  opacity: 0.9;
+}
+
+/* --- The Form --- */
+.planner-form {
+  padding: 32px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+}
+
+.planner-form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-light);
+}
+
+.planner-form input[type="number"],
+.planner-form input[type="text"],
+.planner-form select {
+  margin-top: 8px;
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-sizing: border-box; 
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.planner-form input:focus,
+.planner-form select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.generate-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  background-color: var(--color-secondary); /* Our "health green" */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 32px;
+  transition: all 0.2s ease;
+}
+
+.generate-button:hover {
+  background-color: #1e9e4f; /* Darker green */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+}
+
+.generate-button:disabled {
+  background-color: #9CA3AF;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* --- The Result --- */
+.planner-result {
+  padding: 0 32px 32px 32px;
+}
+
+.planner-result h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 12px;
+}
+
+.planner-error {
+  text-align: center;
+  padding: 0 32px 32px 32px;
+  font-weight: 500;
+  color: #e74c3c; /* Red error color */
+}
+
+
+/* --- 4. NEW STYLES FOR MARKDOWN --- */
+/* This is where we style the AI's response */
+.meal-plan-markdown {
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 20px;
+  font-family: 'Manrope', 'Inter', sans-serif;
+  font-size: 0.95rem;
+  color: var(--color-text-light);
+  line-height: 1.7;
+}
+
+/* This styles # Day 1, # Day 2... */
+.meal-plan-markdown h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-top: 24px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--color-primary);
+}
+.meal-plan-markdown h1:first-child {
+  margin-top: 0;
+}
+
+/* This styles ## Breakfast, ## Lunch... */
+.meal-plan-markdown h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-secondary); /* Green! */
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+/* This styles the * bullet points */
+.meal-plan-markdown ul {
+  padding-left: 20px;
+  margin: 0;
+}
+
+.meal-plan-markdown li {
+  margin-bottom: 8px;
+}
+
+/* This styles the final disclaimer */
+.meal-plan-markdown p {
+  margin-top: 24px;
+  font-size: 0.9rem;
+  font-style: italic;
+  border-top: 1px solid var(--color-border);
+  padding-top: 16px;
+}

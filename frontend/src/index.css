@@ -19,6 +19,7 @@
   --gradient-ai: linear-gradient(135deg, #2563eb, #9333ea);
 }
 
+
 /* --- Base Setup --- */
 html, body, #root {
   height: 100%;
