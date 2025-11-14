@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import './ChatbotPage.css'; // We'll update this next
+import './ChatbotPage.css';
 import { FaCommentDots, FaPaperPlane } from 'react-icons/fa';
-import axios from 'axios'; // We'll use this to talk to the backend
+import axios from 'axios';
 
 // 1. THE CHATBOT COMPONENT (Rebuilt for Generative AI)
 function ChatbotPage() {
@@ -20,31 +20,44 @@ function ChatbotPage() {
   // State for the "Bot is typing..." indicator
   const [isLoading, setIsLoading] = useState(false);
   
-  const chatEndRef = useRef(null);
+  // --- THIS IS THE FIX ---
+  // 1. We create a ref for the *message container* itself
+  const messagesContainerRef = useRef(null);
+  // (We no longer need chatEndRef)
+  // --- END OF FIX ---
 
   // Scroll to the bottom when new messages are added
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // --- THIS IS THE FIX ---
+    // 2. We now *manually* set the scroll position of the
+    //    message container to its full height.
+    //    This ONLY scrolls the chat box, not the whole page.
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
+    // --- END OF FIX ---
   }, [messages]);
 
-  // 2. THE HANDLE SUBMIT FUNCTION
+  // 2. THE HANDLE SUBMIT FUNCTION (No changes, this is correct)
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (input.trim() === '') return;
 
     const userMessage = { from: 'user', text: input };
     
+    // Create newMessages here to send to the API
+    const newMessages = [...messages, userMessage];
+    
     // Add user message to history and show "typing..."
-    setMessages(prevMessages => [...prevMessages, userMessage]);
+    setMessages(newMessages); // Use newMessages
     setIsLoading(true);
     setInput(''); // Clear the input box
 
     try {
-      // 3. SEND TO BACKEND (This will fail until we build Phase 2)
-      // We send the *entire* message history for context
+      // 3. SEND TO BACKEND
       const response = await axios.post(
         'http://127.0.0.1:5000/api/chatbot', 
-        { messages: [...messages, userMessage] }
+        { messages: newMessages } // Send the newMessages array
       );
       
       // 4. RECEIVE FROM BACKEND
@@ -70,8 +83,9 @@ function ChatbotPage() {
           <span>AI HealthBot</span>
         </div>
         
-        {/* Messages */}
-        <div className="chatbot-messages">
+        {/* --- THIS IS THE FIX --- */}
+        {/* 3. Add the ref to the messages div */}
+        <div className="chatbot-messages" ref={messagesContainerRef}>
           {messages.map((msg, index) => (
             <div key={index} className={`chat-bubble-container ${msg.from}`}>
               <div className={`chat-bubble`}>
@@ -89,10 +103,10 @@ function ChatbotPage() {
             </div>
           )}
 
-          <div ref={chatEndRef} />
+          {/* 4. We no longer need the 'chatEndRef' div here */}
         </div>
         
-        {/* 4. THE NEW INPUT FORM */}
+        {/* 4. THE NEW INPUT FORM (No changes) */}
         <form className="chatbot-input-form" onSubmit={handleSubmit}>
           <input
             type="text"

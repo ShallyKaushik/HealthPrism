@@ -1,0 +1,85 @@
+/* frontend/src/components/RiskFactors.css */
+
+.risk-factors-card {
+  width: 100%;
+  background-color: var(--color-bg-white);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  margin-top: 30px; /* Space from the ResultCard */
+  overflow: hidden;
+}
+
+.risk-factors-card h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0;
+  padding: 24px;
+  background-color: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.risk-factors-list {
+  list-style: none;
+  padding: 24px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.risk-factors-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.risk-factors-list li svg {
+  margin-top: 4px;
+  flex-shrink: 0;
+  font-size: 1.1rem;
+}
+
+/* --- Severity Colors --- */
+.factor-high {
+  color: #c0392b; /* Dark Red */
+}
+.factor-high svg {
+  color: #e74c3c; /* Bright Red */
+}
+
+.factor-medium {
+  color: #d35400; /* Orange */
+}
+.factor-medium svg {
+  color: #f39c12; /* Yellow/Orange */
+}
+
+.factor-low {
+  color: var(--color-text-light); /* Grey */
+}
+.factor-low svg {
+  color: #95a5a6; /* Lighter Grey */
+}
+
+.factor-good {
+  color: #27ae60; /* Dark Green */
+}
+.factor-good svg {
+  color: var(--color-secondary); /* Bright Green */
+}
+
+/* --- Disclaimer --- */
+.disclaimer {
+  padding: 20px 24px;
+  margin: 0;
+  background-color: #fffaf0; /* Light yellow */
+  border-top: 1px solid #ffeeba;
+  color: #856404; /* Dark yellow */
+  font-size: 0.9rem;
+  font-style: italic;
+  line-height: 1.6;
+}

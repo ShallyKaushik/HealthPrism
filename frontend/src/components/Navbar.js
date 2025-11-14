@@ -2,13 +2,9 @@
 
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext'; // 1. IMPORT THE "AUTH BRAIN"
 import './Navbar.css';
 
 function Navbar() {
-  // 2. GET THE TOKEN AND LOGOUT FUNCTION FROM THE CONTEXT
-  const { token, logout } = useAuth();
-
   return (
     <header className="navbar-header">
       <nav className="navbar-container">
@@ -19,14 +15,17 @@ function Navbar() {
           </Link>
         </div>
         
-        {/* 2. Navigation Links (Unchanged) */}
+        {/* 2. Navigation Links */}
         <ul className="navbar-links">
           <li>
             <NavLink to="/">Home</NavLink>
           </li>
+          {/* --- THIS IS THE FIX --- */}
+          {/* This is now an anchor link that scrolls to the #features ID */}
           <li>
-            <NavLink to="/features">Features</NavLink>
+            <a href="/#features">Features</a>
           </li>
+          {/* --- END OF FIX --- */}
           <li>
             <NavLink to="/nutrition">Nutrition</NavLink>
           </li>
@@ -41,26 +40,11 @@ function Navbar() {
           </li>
         </ul>
 
-        {/* 3. DYNAMIC ACTION BUTTONS */}
+        {/* 3. Action Buttons */}
         <div className="navbar-actions">
-          {token ? (
-            // --- IF USER IS LOGGED IN ---
-            <button onClick={logout} className="navbar-button-secondary">
-              Logout
-            </button>
-          ) : (
-            // --- IF USER IS LOGGED OUT ---
-            <>
-              <Link to="/login" className="navbar-button-secondary">
-                Login
-              </Link>
-              <Link to="/register" className="navbar-button-primary">
-                Register
-              </Link>
-              {/* We can hide "Predict Now" until they log in, 
-                  or link it to the /register page */}
-            </>
-          )}
+          <Link to="/predict" className="navbar-button-primary">
+            Predict Now
+          </Link>
         </div>
       </nav>
     </header>

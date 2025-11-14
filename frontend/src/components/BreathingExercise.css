@@ -1,0 +1,117 @@
+/* frontend/src/components/BreathingExercise.css */
+
+.breathing-tool-card {
+  background-color: var(--color-bg-white);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.07);
+  overflow: hidden;
+  margin-bottom: 60px;
+  text-align: center;
+  padding: 32px;
+}
+
+.breathing-tool-card h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--color-accent); /* Purple theme */
+  margin: 0 0 8px 0;
+}
+
+.breathing-tool-card p {
+  font-size: 1rem;
+  color: var(--color-text-light);
+  margin-bottom: 32px;
+}
+
+.breathing-ui-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 250px;
+  margin-bottom: 32px;
+}
+
+.breathing-circle {
+  width: 150px;
+  height: 150px;
+  background: linear-gradient(135deg, var(--color-accent) 0%, #a855f7 100%);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.5s ease;
+  transform: scale(0.8); /* Start small */
+}
+
+.breathing-circle-inner {
+  width: 130px;
+  height: 130px;
+  background-color: var(--color-bg-white);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.breathing-text {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+/* --- THE ANIMATION --- */
+.breathing-circle.inhale {
+  animation: breathe-in 4s ease-in-out forwards;
+}
+.breathing-circle.hold {
+  animation: breathe-hold 4s ease-in-out forwards;
+}
+.breathing-circle.exhale {
+  animation: breathe-out 6s ease-in-out forwards;
+}
+
+@keyframes breathe-in {
+  from { transform: scale(0.8); }
+  to { transform: scale(1.2); }
+}
+
+@keyframes breathe-hold {
+  from { transform: scale(1.2); }
+  to { transform: scale(1.2); }
+}
+
+@keyframes breathe-out {
+  from { transform: scale(1.2); }
+  to { transform: scale(0.8); }
+}
+
+/* --- Controls --- */
+.breathing-controls .control-button {
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.control-button.start {
+  background-color: var(--color-secondary); /* Green */
+  color: white;
+}
+.control-button.start:hover {
+  background-color: #1e9e4f; /* Darker green */
+}
+
+.control-button.stop {
+  background-color: #e74c3c; /* Red */
+  color: white;
+}
+.control-button.stop:hover {
+  background-color: #c0392b; /* Darker red */
+}

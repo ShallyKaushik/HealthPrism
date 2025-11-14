@@ -25,42 +25,43 @@ function AboutPage() {
         <div className="about-card">
           <h2>Our Story</h2>
           <p>
-            HeartHealth began as a research project with a simple question: 
-            Can we use machine learning to predict heart disease risk earlier and 
-            more accurately than traditional methods? Today, that research has 
-            evolved into a comprehensive platform. We believe that the best 
-            healthcare isn't just about treating sickness—it's about proactively
-            managing wellness.
+           HeartHealth: Your AI-Powered Wellness Partner
+           HeartHealth started as a student research project driven by one 
+           question — Can machine learning help predict heart disease risks earlier and 
+           more accurately than traditional methods?What began as curiosity has now 
+           evolved into a smart AI-powered health assistant. Our mission goes beyond 
+           diagnosing illness — we aim to promote proactive wellness.
           </p>
           <p>
-            Our team of data scientists, medical professionals, and engineers 
-            are dedicated to building tools that empower you. By turning complex 
-            medical data into clear, actionable insights, we help you take control 
-            of your health journey.
+            Our team of passionate CSE students is dedicated to building
+            intelligent tools that make healthcare more personal and predictive. 
+            By transforming complex medical data into simple, actionable insights, 
+            HeartHealth empowers users to take charge of their health — every day, w
+            ith confidence.
           </p>
         </div>
 
         {/* --- 3. Meet the Team Section --- */}
         <div className="team-section">
-          <h2>Meet the Team (Placeholders)</h2>
+          <h2>Meet the Team </h2>
           <div className="team-grid">
             
             <div className="team-member-card">
               <img src={teamImg1} alt="Team Member 1" />
               <h3>Aryan Gupta</h3>
-              <p>Chief Medical Officer</p>
+              <p></p>
             </div>
             
             <div className="team-member-card">
               <img src={teamImg2} alt="Team Member 2" />
               <h3>Souryapriya Choudhary</h3>
-              <p>Lead Data Scientist</p>
+              <p></p>
             </div>
             
             <div className="team-member-card">
               <img src={teamImg3} alt="Team Member 3" />
               <h3>Shelly Kaushik</h3>
-              <p>Lead Engineer</p>
+              <p></p>
             </div>
 
           </div>

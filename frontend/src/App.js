@@ -2,56 +2,49 @@
 
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext'; // 1. IMPORT THE AUTHPROVIDER
-import { PredictionProvider } from './context/PredictionContext';
+import { PredictionProvider } from './context/PredictionContext'; 
 
-// Import Components
+// --- Import All Your Reusable Components ---
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ChatbotIcon from './components/ChatbotIcon';
+import ScrollToTop from './components/ScrollToTop'; // Fixes page-load scroll bug
 
-// Import Pages
-import DashboardPage from './pages/DashboardPage';
-import PredictorPage from './pages/PredictorPage';
-import FeaturesPage from './pages/FeaturesPage';
-import AboutPage from './pages/AboutPage';
-import ChatbotPage from './pages/ChatbotPage';
-import NutritionPage from './pages/NutritionPage';
-import StressPage from './pages/StressPage';
-import LoginPage from './pages/LoginPage';     // 2. IMPORT THE NEW PAGES
-import RegisterPage from './pages/RegisterPage'; // 2. IMPORT THE NEW PAGES
+// --- Import All Your Pages ---
+import DashboardPage from './pages/DashboardPage';   // Your homepage
+import PredictorPage from './pages/PredictorPage';   // The predictor tool
+// 'FeaturesPage' is removed because it's merged into the DashboardPage
+import AboutPage from './pages/AboutPage';        // The "About" page
+import ChatbotPage from './pages/ChatbotPage';      // The "Chatbot" page
+import NutritionPage from './pages/NutritionPage'; // The "Nutrition" page
+import StressPage from './pages/StressPage';     // The "Stress" page
 
 function App() {
   return (
     <Router>
-      {/* 3. WRAP EVERYTHING IN AUTHPROVIDER */}
-      <AuthProvider>
-        <PredictionProvider>
-          <div className="App">
-            <Navbar />
-            
-            <main className="main-content">
-              <Routes>
-                {/* Your existing routes */}
-                <Route path="/" element={<DashboardPage />} />
-                <Route path="/predict" element={<PredictorPage />} />
-                <Route path="/features" element={<FeaturesPage />} />
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/chatbot" element={<ChatbotPage />} /> 
-                <Route path="/nutrition" element={<NutritionPage />} />
-                <Route path="/stress" element={<StressPage />} />
+      <PredictionProvider>
+        <ScrollToTop /> {/* This fixes the scroll bug on page navigation */}
+        <div className="App">
+          
+          <Navbar />
+          
+          <main className="main-content">
+            <Routes>
+              <Route path="/" element={<DashboardPage />} />
+              <Route path="/predict" element={<PredictorPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/chatbot" element={<ChatbotPage />} /> 
+              <Route path="/nutrition" element={<NutritionPage />} />
+              <Route path="/stress" element={<StressPage />} />
+              {/* The /features route is intentionally removed */}
+            </Routes>
+          </main>
+          
+          <ChatbotIcon />
+          <Footer />
 
-                {/* 4. ADD THE NEW AUTH ROUTES */}
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
-              </Routes>
-            </main>
-            
-            <ChatbotIcon />
-            <Footer />
-          </div>
-        </PredictionProvider>
-      </AuthProvider>
+        </div>
+      </PredictionProvider>
     </Router>
   );
 }

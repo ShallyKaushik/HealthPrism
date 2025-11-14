@@ -1,4 +1,4 @@
-/* frontend/src/pages/ChatbotPage.css */
+frontend/src/pages/ChatbotPage.css
 
 .chatbot-page-container {
   display: flex;
@@ -149,4 +149,119 @@
 .chatbot-input-form button:disabled {
   background-color: var(--color-border);
   cursor: not-allowed;
+}
+
+
+/* frontend/src/pages/ChatbotPage.css */
+
+.chatbot-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 24px;
+}
+
+.chatbot-window {
+  width: 100%;
+  max-width: 800px;
+  height: 70vh; /* 70% of the viewport height */
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-bg-white);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+  overflow: hidden;
+}
+
+/* --- Header --- */
+.chatbot-header {
+  background: var(--color-primary); /* Use our theme blue */
+  color: white;
+  padding: 16px 24px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* --- Messages --- */
+.chatbot-messages {
+  flex-grow: 1;
+  padding: 24px;
+  overflow-y: auto; /* Make messages scrollable */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chat-bubble-container {
+  display: flex;
+}
+.chat-bubble-container.user {
+  justify-content: flex-end; /* Align user messages to the right */
+}
+
+.chat-bubble {
+  max-width: 75%;
+  padding: 12px 18px;
+  border-radius: 20px;
+  line-height: 1.5;
+}
+
+.chat-bubble p {
+  margin: 0;
+}
+
+.chat-bubble-container.bot .chat-bubble {
+  background-color: var(--color-primary);
+  color: white;
+  border-top-left-radius: 0;
+}
+
+.chat-bubble-container.user .chat-bubble {
+  background-color: var(--color-border);
+  color: var(--color-text);
+  border-top-right-radius: 0;
+}
+
+/* This styles the <Link> component we inject */
+.chatbot-link {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: underline;
+}
+.chat-bubble-container.bot .chatbot-link {
+  color: #f9fafb; /* Lighter link inside a blue bubble */
+}
+
+
+/* --- Options --- */
+.chatbot-options {
+  padding: 24px;
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  overflow-y: auto; /* Make options scrollable if many */
+}
+
+.chatbot-option-button {
+  padding: 12px 18px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  background-color: var(--color-bg-white);
+  border: 1px solid var(--color-primary);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.chatbot-option-button:hover {
+  background-color: var(--color-primary);
+  color: white;
+  transform: translateY(-2px);
 }
