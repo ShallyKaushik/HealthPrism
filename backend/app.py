@@ -1,5 +1,3 @@
-# backend/app.py
-
 import joblib
 import pandas as pd
 from flask import Flask, request, jsonify
@@ -8,46 +6,73 @@ import requests
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+# --- 1. IMPORTS FOR ADVANCED FEATURES ---
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+import urllib3
 
-# --- 1. Initialize Application ---
+# --- 2. SETUP ---
+load_dotenv()
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+# --- 3. Initialize Application ---
 app = Flask(__name__)
 CORS(app) 
 
-# --- 2. Load The *Optimized* Model ---
-# We only load our one, final, optimized model
+# --- 4. Load ALL OUR ML Models ---
+
+# Model 1: Heart Risk (Optimized 8-Feature)
 try:
-    model = joblib.load('heart_risk_pipeline.joblib')
-    print("✅ OPTIMIZED Model (Top 8 Features) loaded successfully!")
+    heart_model = joblib.load('heart_risk_pipeline.joblib')
+    print("✅ OPTIMIZED Heart Model (Top 8 Features) loaded successfully!")
 except Exception as e:
-    print(f"❌ Error loading model: {e}")
-    model = None
+    print(f"❌ Error loading Heart model: {e}")
+    heart_model = None
 
-# --- 3. Define Feature Lists (Optimized) ---
-# This list MUST match the 8 features we just trained on
-OPTIMIZED_NUMERIC_FEATURES = ['age', 'trestbps', 'chol', 'thalach', 'oldpeak']
-OPTIMIZED_CATEGORICAL_FEATURES = ['cp', 'ca', 'thal']
-ALL_OPTIMIZED_FEATURES = OPTIMIZED_NUMERIC_FEATURES + OPTIMIZED_CATEGORICAL_FEATURES
+# Model 2: Stress Predictor (NEW)
+try:
+    stress_model = joblib.load('stress_model.joblib')
+    print("✅ NEW Stress Model loaded successfully!")
+except Exception as e:
+    print(f"❌ Error loading Stress model: {e}")
+    stress_model = None
+# --- END OF MODEL LOADING ---
+
+# --- 5. Initialize NLP Analyzer ---
+sentiment_analyzer = SentimentIntensityAnalyzer()
+print("✅ VADER Sentiment Analyzer loaded successfully!")
+
+# --- 6. Define Feature Lists ---
+# For Heart Model
+HEART_NUMERIC_FEATURES = ['age', 'trestbps', 'chol', 'thalach', 'oldpeak']
+HEART_CATEGORICAL_FEATURES = ['cp', 'ca', 'thal']
+ALL_HEART_FEATURES = HEART_NUMERIC_FEATURES + HEART_CATEGORICAL_FEATURES
+
+# For Stress Model (from train_stress_model.py)
+STRESS_NUMERIC_FEATURES = [
+    'Age', 'Sleep Duration', 'Quality of Sleep', 
+    'Physical Activity Level', 'Heart Rate', 'Daily Steps',
+    'Systolic BP', 'Diastolic BP'
+]
+STRESS_CATEGORICAL_FEATURES = [
+    'Gender', 'Occupation', 'BMI Category'
+]
+ALL_STRESS_FEATURES = STRESS_NUMERIC_FEATURES + STRESS_CATEGORICAL_FEATURES
 
 
-# --- 4. Prediction Route (Now uses 8 features) ---
+# --- 7. Heart Prediction Route ---
 @app.route('/api/predict', methods=['POST'])
 def predict():
-    if model is None:
-        return jsonify({'error': 'Optimized model is not loaded'}), 500
+    if heart_model is None:
+        return jsonify({'error': 'Optimized heart model is not loaded'}), 500
     try:
         data = request.json
         if not data:
             return jsonify({'error': 'No JSON data received'}), 400
 
-        # Create the DataFrame using *only* our 8 selected features
         input_df = pd.DataFrame([data])
+        input_df = input_df[ALL_HEART_FEATURES]
         
-        # We must re-order them to be 100% sure
-        input_df = input_df[ALL_OPTIMIZED_FEATURES]
-        
-        # The pipeline will handle the rest
-        probabilities = model.predict_proba(input_df)
+        probabilities = heart_model.predict_proba(input_df)
         risk_probability = float(probabilities[0][0]) # Class 0 (High Risk)
 
         return jsonify({
@@ -55,17 +80,54 @@ def predict():
             'probability_high_risk': risk_probability
         }), 200
     except Exception as e:
-        print(f"❌ Error during prediction: {e}")
+        print(f"❌ Error during heart prediction: {e}")
         return jsonify({'error': f'Internal server error: {e}'}), 500
 
-# --- 5. All Anonymous AI Routes ---
-# (Your Chatbot, Nutrition, and Stress routes are all here,
-# unchanged, and will work perfectly)
+# --- 8. NEW: Stress Prediction Route ---
+@app.route('/api/predict-stress', methods=['POST'])
+def predict_stress():
+    if stress_model is None:
+        return jsonify({'error': 'Stress model is not loaded'}), 500
+    try:
+        data = request.json
+        if not data:
+            return jsonify({'error': 'No JSON data received'}), 400
+        
+        # We need to handle the Blood Pressure string split
+        try:
+            bp_split = data['Blood Pressure'].split('/')
+            data['Systolic BP'] = int(bp_split[0])
+            data['Diastolic BP'] = int(bp_split[1])
+        except Exception as e:
+            print(f"Error splitting BP: {e}")
+            return jsonify({'error': 'Invalid Blood Pressure format. Must be "Systolic/Diastolic" (e.g., "120/80")'}), 400
+        
+        # Create DataFrame from the 10 input features
+        input_df = pd.DataFrame([data])
+        input_df = input_df[ALL_STRESS_FEATURES]
+        
+        # The model's pipeline will do all the scaling/encoding
+        # It will predict "Low Stress", "Moderate Stress", or "High Stress"
+        prediction_array = stress_model.predict(input_df)
+        stress_level = prediction_array[0] # Get the string from the array
+        
+        return jsonify({
+            'message': 'Stress prediction successful',
+            'stress_level': stress_level
+        }), 200
+        
+    except Exception as e:
+        print(f"❌ Error during stress prediction: {e}")
+        return jsonify({'error': f'Internal server error: {e}'}), 500
+# --- END OF NEW STRESS ROUTE ---
 
+
+# --- 9. AI CHATBOT ROUTE (GenAI) ---
 @app.route('/api/chatbot', methods=['POST'])
 def chatbot():
+    # ... (your existing chatbot code, no changes) ...
     SYSTEM_PROMPT = (
-        "You are HealthBot, a friendly and helpful AI assistant... " 
+        "You are HealthBot, a friendly and helpful AI assistant..." 
     )
     data = request.json
     user_message = data.get('messages', [{}])[-1].get('text', '')
@@ -79,7 +141,7 @@ def chatbot():
             "systemInstruction": {"parts": [{"text": SYSTEM_PROMPT}]}
         }
         headers = {'Content-Type': 'application/json'}
-        response = requests.post(apiUrl, json=payload, headers=headers)
+        response = requests.post(apiUrl, json=payload, headers=headers, verify=False)
         response.raise_for_status() 
         result = response.json()
         text = result.get('candidates', [{}])[0].get('content', {}).get('parts', [{}])[0].get('text', '')
@@ -89,8 +151,10 @@ def chatbot():
         print(f"❌ Error processing chatbot request: {e}")
         return jsonify({'answer': 'Sorry, I\'m facing a technical issue.'}), 500
 
+# --- 10. AI NUTRITION PLANNER ROUTE (GenAI + Risk Score) ---
 @app.route('/api/nutrition-planner', methods=['POST'])
 def nutrition_planner():
+    # ... (your existing nutrition code, no changes) ...
     SYSTEM_PROMPT = (
         "You are an expert AI Nutritionist..." 
     )
@@ -121,7 +185,7 @@ def nutrition_planner():
             "systemInstruction": {"parts": [{"text": SYSTEM_PROMPT}]}
         }
         headers = {'Content-Type': 'application/json'}
-        response = requests.post(apiUrl, json=payload, headers=headers)
+        response = requests.post(apiUrl, json=payload, headers=headers, verify=False)
         response.raise_for_status()
         result = response.json()
         text = result.get('candidates', [{}])[0].get('content', {}).get('parts', [{}])[0].get('text', '')
@@ -131,14 +195,23 @@ def nutrition_planner():
         print(f"❌ Error processing nutrition plan request: {e}")
         return jsonify({'error': 'Sorry, I\'m facing a technical issue.'}), 500
 
+# --- 11. ADVANCED AI STRESS COACH (GenAI + NLP) ---
 @app.route('/api/stress-coach', methods=['POST'])
 def stress_coach():
+    # ... (your existing stress coach code, no changes) ...
     SYSTEM_PROMPT = (
         "You are an AI Stress & Wellness Coach..."
     )
     data = request.json
-    topic = data.get('topic'); risk_score = data.get('riskScore') 
-    if not topic: return jsonify({'error': 'Missing form data.'}), 400
+    user_text = data.get('user_text'); risk_score = data.get('riskScore') 
+    if not user_text: return jsonify({'error': 'Missing form data.'}), 400
+    sentiment = sentiment_analyzer.polarity_scores(user_text)
+    # ... (rest of NLP logic) ...
+    sentiment_score = sentiment['compound']
+    if sentiment_score < -0.5: sentiment_label = "Very Negative"
+    elif sentiment_score < 0: sentiment_label = "Negative"
+    elif sentiment_score == 0: sentiment_label = "Neutral"
+    else: sentiment_label = "Positive"
     risk_text = "N/A"
     if risk_score is not None:
         risk_percentage = round(risk_score * 100, 1)
@@ -146,9 +219,9 @@ def stress_coach():
         else: risk_text = f"{risk_percentage}% (LOW/BORDERLINE risk)"
     USER_PROMPT = f"""
     Please generate a 2-3 step, simple stress-relief plan for me.
-    - My Main Stressor: {topic}
+    - The User's Raw Feeling: "{user_text}"
+    - My NLP Model's Sentiment Analysis: {sentiment_label} (Score: {sentiment_score})
     - My LATEST HEART RISK SCORE: {risk_text}
-    Please make the plan specific to my stressor and acknowledge my heart risk level.
     """
     try:
         apiKey = os.getenv("GEMINI_API_KEY")
@@ -159,7 +232,7 @@ def stress_coach():
             "systemInstruction": {"parts": [{"text": SYSTEM_PROMPT}]}
         }
         headers = {'Content-Type': 'application/json'}
-        response = requests.post(apiUrl, json=payload, headers=headers)
+        response = requests.post(apiUrl, json=payload, headers=headers, verify=False)
         response.raise_for_status()
         result = response.json()
         text = result.get('candidates', [{}])[0].get('content', {}).get('parts', [{}])[0].get('text', '')
@@ -169,6 +242,6 @@ def stress_coach():
         print(f"❌ Error processing stress plan request: {e}")
         return jsonify({'error': 'Sorry, I\'m facing a technical issue.'}), 500
 
-# --- 6. Run the Application ---
+# --- 12. Run the Application ---
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

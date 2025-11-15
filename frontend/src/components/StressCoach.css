@@ -6,23 +6,20 @@
   border-radius: 16px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.07);
   overflow: hidden;
-  margin-bottom: 60px; /* Space between coach and static content */
+  margin-bottom: 60px;
 }
 
 .coach-header {
   padding: 32px;
   text-align: center;
-  /* AI-themed purple gradient */
   background: linear-gradient(135deg, var(--color-accent) 0%, #a855f7 100%);
   color: white;
 }
-
 .coach-header h2 {
   font-size: 1.75rem;
   font-weight: 600;
   margin: 0 0 8px 0;
 }
-
 .coach-header p {
   font-size: 1rem;
   margin: 0;
@@ -36,7 +33,6 @@
   flex-direction: column;
   gap: 20px;
 }
-
 .coach-form label {
   display: flex;
   flex-direction: column;
@@ -45,7 +41,8 @@
   color: var(--color-text-light);
 }
 
-.coach-form select {
+/* --- NEW: Textarea Styles --- */
+.coach-form textarea {
   margin-top: 8px;
   width: 100%;
   padding: 12px;
@@ -56,16 +53,16 @@
   border: 1px solid var(--color-border);
   border-radius: 8px;
   box-sizing: border-box; 
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
+  resize: vertical; /* Allow user to resize vertically */
 }
-
-.coach-form select:focus {
+.coach-form textarea:focus {
   outline: none;
   border-color: var(--color-accent);
   box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
 }
+/* --- END OF NEW STYLES --- */
+
+/* (Your old .select styles are removed) */
 
 .generate-button {
   display: flex;
@@ -84,13 +81,11 @@
   margin-top: 16px;
   transition: all 0.2s ease;
 }
-
 .generate-button:hover {
-  background-color: #8628d9; /* Darker purple */
+  background-color: #8628d9;
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(147, 51, 234, 0.3);
 }
-
 .generate-button:disabled {
   background-color: #9CA3AF;
   cursor: not-allowed;
@@ -98,11 +93,10 @@
   box-shadow: none;
 }
 
-/* --- The Result --- */
+/* --- The Result (No changes) --- */
 .coach-result {
   padding: 0 32px 32px 32px;
 }
-
 .coach-result h3 {
   font-size: 1.25rem;
   font-weight: 600;
@@ -111,15 +105,12 @@
   border-bottom: 1px solid var(--color-border);
   padding-bottom: 12px;
 }
-
 .coach-error {
   text-align: center;
   padding: 0 32px 32px 32px;
   font-weight: 500;
-  color: #e74c3c; /* Red error color */
+  color: #e74c3c;
 }
-
-/* --- Styles for Markdown --- */
 .coach-plan-markdown {
   background-color: var(--color-bg);
   border: 1px solid var(--color-border);
@@ -130,29 +121,25 @@
   color: var(--color-text-light);
   line-height: 1.7;
 }
-
 .coach-plan-markdown h1, 
 .coach-plan-markdown h2, 
 .coach-plan-markdown h3 {
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--color-accent); /* Purple! */
+  color: var(--color-accent);
   margin-top: 20px;
   margin-bottom: 10px;
 }
 .coach-plan-markdown h1:first-child {
   margin-top: 0;
 }
-
 .coach-plan-markdown ul {
   padding-left: 20px;
   margin: 0;
 }
-
 .coach-plan-markdown li {
   margin-bottom: 8px;
 }
-
 .coach-plan-markdown p {
   margin-top: 16px;
 }

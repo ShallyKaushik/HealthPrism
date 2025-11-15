@@ -3,12 +3,16 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
-import './StressCoach.css'; // We will create this
+import './StressCoach.css'; // We will update this
 import { FaPaperPlane } from 'react-icons/fa';
 import { usePrediction } from '../context/PredictionContext'; // Get the global brain
 
 function StressCoach() {
-  const [topic, setTopic] = useState('Work');
+  // --- 1. THIS IS THE NEW STATE ---
+  // We now store the user's typed text, not a 'topic'
+  const [userText, setUserText] = useState('');
+  // --- END OF NEW STATE ---
+
   const [plan, setPlan] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -21,10 +25,13 @@ function StressCoach() {
     setPlan('');
     setError(null);
 
+    // --- 2. THIS IS THE NEW PAYLOAD ---
+    // It sends the raw text to be analyzed by VADER on the backend
     const payload = {
-      topic: topic,
+      user_text: userText, // Send the raw text
       riskScore: latestPrediction // Send the score to the AI
     };
+    // --- END OF NEW PAYLOAD ---
 
     try {
       const response = await axios.post(
@@ -44,20 +51,22 @@ function StressCoach() {
     <div className="stress-coach-card">
       <div className="coach-header">
         <h2>✨ Your AI Wellness Coach</h2>
-        <p>Feeling overwhelmed? Select your main stressor and get an instant, actionable plan.</p>
+        <p>Feeling overwhelmed? Tell me what's on your mind and get an instant, actionable plan.</p>
       </div>
 
-      {/* --- The Form --- */}
+      {/* --- 3. THIS IS THE NEW FORM --- */}
       <form onSubmit={handleSubmit} className="coach-form">
         <label>
-          What's your main source of stress right now?
-          <select name="topic" value={topic} onChange={(e) => setTopic(e.target.value)}>
-            <option value="Work">Work</option>
-            <option value="Family">Family</option>
-            <option value="Finances">Finances</option>
-            <option value="Health Concerns">Health Concerns</option>
-            <option value="General Anxiety">General Anxiety</option>
-          </select>
+          How are you feeling right now?
+          {/* We replaced the <select> with a <textarea> */}
+          <textarea
+            name="user_text"
+            value={userText}
+            onChange={(e) => setUserText(e.target.value)}
+            placeholder="e.g., 'I'm feeling overwhelmed by work deadlines and haven't been sleeping well...'"
+            rows={4}
+            required
+          />
         </label>
         
         <button type="submit" className="generate-button" disabled={isLoading}>
@@ -68,8 +77,9 @@ function StressCoach() {
           )}
         </button>
       </form>
+      {/* --- END OF NEW FORM --- */}
 
-      {/* --- The Result --- */}
+      {/* --- The Result (No change) --- */}
       {error && <div className="coach-error">{error}</div>}
       
       {plan && (

@@ -8,22 +8,23 @@ import { PredictionProvider } from './context/PredictionContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ChatbotIcon from './components/ChatbotIcon';
-import ScrollToTop from './components/ScrollToTop'; // Fixes page-load scroll bug
+import ScrollToTop from './components/ScrollToTop'; // <-- 1. IMPORT THE FIX
 
 // --- Import All Your Pages ---
-import DashboardPage from './pages/DashboardPage';   // Your homepage
-import PredictorPage from './pages/PredictorPage';   // The predictor tool
-// 'FeaturesPage' is removed because it's merged into the DashboardPage
-import AboutPage from './pages/AboutPage';        // The "About" page
-import ChatbotPage from './pages/ChatbotPage';      // The "Chatbot" page
-import NutritionPage from './pages/NutritionPage'; // The "Nutrition" page
-import StressPage from './pages/StressPage';     // The "Stress" page
+import DashboardPage from './pages/DashboardPage';
+import PredictorPage from './pages/PredictorPage';
+// FeaturesPage is now part of DashboardPage
+import AboutPage from './pages/AboutPage';
+import ChatbotPage from './pages/ChatbotPage';
+import NutritionPage from './pages/NutritionPage';
+import StressPage from './pages/StressPage';         // The AI Coach page
+import StressTestPage from './pages/StressTestPage';   // The ML Predictor page
 
 function App() {
   return (
     <Router>
       <PredictionProvider>
-        <ScrollToTop /> {/* This fixes the scroll bug on page navigation */}
+        <ScrollToTop /> {/* <-- 2. ADD THE FIX HERE */}
         <div className="App">
           
           <Navbar />
@@ -36,7 +37,7 @@ function App() {
               <Route path="/chatbot" element={<ChatbotPage />} /> 
               <Route path="/nutrition" element={<NutritionPage />} />
               <Route path="/stress" element={<StressPage />} />
-              {/* The /features route is intentionally removed */}
+              <Route path="/stress-test" element={<StressTestPage />} />
             </Routes>
           </main>
           

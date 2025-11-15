@@ -1,0 +1,88 @@
+
+.stress-result-card {
+  background: var(--color-bg-white);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  padding: 32px;
+  border-top: 5px solid #E5E7EB;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.stress-result-card .stress-level-display {
+  font-size: 2.5rem;
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 8px;
+  margin: 15px 0;
+  display: inline-block;
+  color: #fff;
+}
+
+.stress-result-card .stress-message {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  max-width: 450px;
+  margin: 10px auto 0;
+  color: var(--color-text-light);
+}
+
+/* --- Dynamic Colors for Stress --- */
+.stress-result-card.stress-low { 
+  border-top-color: var(--color-secondary); /* Green */
+}
+.stress-result-card.stress-low .stress-level-display { 
+  background-color: var(--color-secondary);
+}
+
+.stress-result-card.stress-moderate { 
+  border-top-color: #f39c12; /* Yellow/Orange */
+}
+.stress-result-card.stress-moderate .stress-level-display { 
+  background-color: #f39c12;
+}
+
+.stress-result-card.stress-high { 
+  border-top-color: #e74c3c; /* Red */
+}
+.stress-result-card.stress-high .stress-level-display { 
+  background-color: #e74c3c;
+}
+
+/* --- CTA for AI Coach --- */
+.coach-cta {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 32px;
+  text-align: center;
+  margin-top: 30px;
+}
+.coach-cta h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 12px 0;
+}
+.coach-cta p {
+  font-size: 1rem;
+  color: var(--color-text-light);
+  margin: 0 0 24px 0;
+}
+.coach-button {
+  display: inline-block;
+  padding: 14px 28px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  background: var(--color-accent);
+  color: var(--color-bg-white);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+.coach-button:hover {
+  background-color: #8628d9;
+  transform: translateY(-2px);
+}

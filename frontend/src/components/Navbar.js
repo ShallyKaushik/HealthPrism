@@ -30,7 +30,7 @@ function Navbar() {
             <NavLink to="/nutrition">Nutrition</NavLink>
           </li>
           <li>
-            <NavLink to="/stress">Stress Management</NavLink>
+            <NavLink to="/stress-test">Stress Predictor</NavLink> 
           </li>
           <li>
             <NavLink to="/about">About</NavLink>
