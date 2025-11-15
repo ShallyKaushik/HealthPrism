@@ -1,9 +1,10 @@
 /* frontend/src/components/Navbar.css */
 
+/* --- Navbar Wrapper --- */
 .navbar-header {
   width: 100%;
   height: 80px;
-  background-color: var(--color-bg-white); /* Clean white navbar */
+  background-color: var(--color-bg-white);
   border-bottom: 1px solid var(--color-border);
   display: flex;
   justify-content: center;
@@ -13,6 +14,7 @@
   z-index: 1000;
 }
 
+/* --- Navbar Inner Container --- */
 .navbar-container {
   width: 100%;
   max-width: 1280px;
@@ -22,7 +24,7 @@
   align-items: center;
 }
 
-/* 1. Logo */
+/* --- Logo --- */
 .navbar-logo a {
   font-size: 1.5rem;
   font-weight: 700;
@@ -30,44 +32,42 @@
   text-decoration: none;
   display: flex;
   align-items: center;
-  gap: 8px; /* Space for the icon */
+  gap: 8px;
 }
-/* Optional: Style for the logo icon */
+
 .logo-icon {
   color: var(--color-primary);
 }
 
-/* 2. Nav Links */
+/* --- Navigation Links --- */
 .navbar-links {
   display: flex;
   list-style: none;
-  margin: 0;
   padding: 0;
+  margin: 0;
   gap: 32px;
 }
 
 .navbar-links a {
   font-size: 1rem;
   font-weight: 500;
-  color: var(--color-text-light); /* Lighter text for links */
+  color: var(--color-text-light);
   text-decoration: none;
   padding: 8px 0;
-  position: relative;
   transition: color 0.2s ease-in-out;
 }
 
 .navbar-links a:hover {
-  color: var(--color-primary); /* Blue hover */
+  color: var(--color-primary);
 }
 
-/* Style for the active page link */
 .navbar-links a.active {
   color: var(--color-primary);
   font-weight: 600;
   border-bottom: 2px solid var(--color-primary);
 }
 
-/* 3. Action Buttons */
+/* --- Action Buttons (Login + Predict) --- */
 .navbar-actions {
   display: flex;
   align-items: center;
@@ -81,12 +81,12 @@
   font-weight: 600;
   border-radius: 8px;
   text-decoration: none;
-  transition: all 0.2s ease-in-out;
   display: inline-block;
   text-align: center;
+  transition: all 0.2s ease-in-out;
 }
 
-/* "Login" style (secondary) */
+/* Secondary Button (Login) */
 .navbar-button-secondary {
   background-color: var(--color-bg-white);
   color: var(--color-primary);
@@ -97,7 +97,7 @@
   background-color: var(--color-bg);
 }
 
-/* "Predict Now" style (primary) */
+/* Primary Button (Predict Now) */
 .navbar-button-primary {
   background-color: var(--color-primary);
   color: var(--color-bg-white);
@@ -107,3 +107,4 @@
 .navbar-button-primary:hover {
   background-color: var(--color-primary-dark);
 }
+  
