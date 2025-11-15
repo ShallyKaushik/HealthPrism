@@ -1,0 +1,10 @@
+flask
+flask-cors
+pandas
+joblib
+scikit-learn
+requests
+python-dotenv
+vaderSentiment
+urllib3
+gunicorn
