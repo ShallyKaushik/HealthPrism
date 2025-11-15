@@ -1,6 +1,6 @@
 // frontend/src/pages/DashboardPage.js
 
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import './DashboardPage.css'; 
 
@@ -29,6 +29,9 @@ const featureImgChatbot = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2w
 
 function DashboardPage() {
   
+  useEffect(() => {
+    document.title = 'Features :)';
+  }, []);
   // --- 2. GET THE FULL HISTORY & LATEST SCORE ---
   const { predictionHistory, latestPrediction } = usePrediction();
 
@@ -188,21 +191,7 @@ function DashboardPage() {
         </div>
       </section>
 
-      {/* --- SOCIAL PROOF SECTION --- */}
-      <section className="social-proof-section">
-        <div className="stat-card">
-          <h3><FaStar style={{color: '#f1c40f'}} /> 4.9*</h3>
-          <p>Average user rating from 2,000+ reviews</p>
-        </div>
-        <div className="stat-card">
-          <h3>HHS Aligned</h3>
-          <p>Our model is built on data aligned with public health standards</p>
-        </div>
-        <div className="stat-card">
-          <h3>2M+</h3>
-          <p>Predictions delivered to our users last year</p>
-        </div>
-      </section>
+    
       
     </div>
   );

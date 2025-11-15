@@ -1,6 +1,6 @@
 // frontend/src/pages/StressPage.js
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './StressPage.css';
 import { FaBrain, FaBed, FaRunning, FaChevronRight } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
@@ -8,6 +8,9 @@ import StressCoach from '../components/StressCoach';       // Your AI Coach
 import BreathingExercise from '../components/BreathingExercise'; // Your Breathing Tool
 
 function StressPage() {
+  useEffect(() => {
+    document.title = 'Heart Risk Predictor - HealthPrism';
+  }, []);
   return (
     <div className="stress-page-container">
       

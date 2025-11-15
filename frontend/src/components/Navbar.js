@@ -10,9 +10,11 @@ function Navbar() {
       <nav className="navbar-container">
         {/* 1. Logo */}
         <div className="navbar-logo">
+          {/* --- THIS IS THE CHANGE --- */}
           <Link to="/">
-            🩺 HeartHealth
+            🩺 HealthPrism
           </Link>
+          {/* --- END OF CHANGE --- */}
         </div>
         
         {/* 2. Navigation Links */}
@@ -20,17 +22,14 @@ function Navbar() {
           <li>
             <NavLink to="/">Home</NavLink>
           </li>
-          {/* --- THIS IS THE FIX --- */}
-          {/* This is now an anchor link that scrolls to the #features ID */}
           <li>
             <a href="/#features">Features</a>
           </li>
-          {/* --- END OF FIX --- */}
           <li>
             <NavLink to="/nutrition">Nutrition</NavLink>
           </li>
           <li>
-            <NavLink to="/stress-test">Stress Predictor</NavLink> 
+            <NavLink to="/stress-test">Stress Predictor</NavLink>
           </li>
           <li>
             <NavLink to="/about">About</NavLink>

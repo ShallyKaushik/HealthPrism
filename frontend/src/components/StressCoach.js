@@ -35,7 +35,7 @@ function StressCoach() {
 
     try {
       const response = await axios.post(
-        'http://127.0.0.1:5000/api/stress-coach',
+        'https://healthprism-api-2025.onrender.com/api/stress-coach',
         payload
       );
       setPlan(response.data.stress_plan);

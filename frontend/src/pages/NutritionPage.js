@@ -28,29 +28,7 @@ function NutritionPage() {
         {/* --- 2. NEW AI PLANNER SECTION --- */}
         <NutritionPlanner /> {/* <-- 2. ADD IT HERE */}
 
-        {/* --- 3. Food Groups Section (Your old content) --- */}
-        <div className="nutrition-section">
-          <h2>Heart-Healthy Food Groups</h2>
-          <div className="food-group-grid">
-            {/* ...all your food group cards... */}
-          </div>
-        </div>
-
-        {/* --- 4. Sample Meal Ideas (Your old content) --- */}
-        <div className="nutrition-section">
-          <h2>Sample Meal Ideas</h2>
-          <div className="meal-ideas-grid">
-            {/* ...all your meal cards... */}
-          </div>
-        </div>
-
-        {/* --- 5. Quick Tips Section (Your old content) --- */}
-        <div className="nutrition-section">
-          <h2>Quick Tips for Success</h2>
-          <ul className="quick-tips-list">
-            {/* ...all your quick tips... */}
-          </ul>
-        </div>
+       
 
       </div>
     </div>

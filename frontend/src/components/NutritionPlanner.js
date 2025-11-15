@@ -40,7 +40,7 @@ function NutritionPlanner() {
 
     try {
       const response = await axios.post(
-        'http://127.0.0.1:5000/api/nutrition-planner',
+        'https://healthprism-api-2025.onrender.com/api/nutrition-planner',
         payload // Send the new, combined payload
       );
       setMealPlan(response.data.meal_plan);

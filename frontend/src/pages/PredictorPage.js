@@ -1,6 +1,10 @@
 // frontend/src/pages/PredictorPage.js
 
-import React, { useState } from 'react';
+// --- 1. THIS IS THE FIX ---
+// We now import useState AND useEffect on the *same line*.
+import React, { useState, useEffect } from 'react';
+// --- END OF FIX ---
+
 import axios from 'axios';
 import './PredictorPage.css';
 import ResultCard from '../components/ResultCard';
@@ -9,6 +13,12 @@ import RiskFactors from '../components/RiskFactors'; // Your "Explainability" co
 
 function PredictorPage() {
   
+  // --- 2. THIS IS THE NEW "DYNAMIC TITLE" FEATURE ---
+  useEffect(() => {
+    document.title = 'Heart Risk Predictor - HealthPrism';
+  }, []); // The empty array [] means it only runs on load
+  // --- END OF NEW FEATURE ---
+
   // The form state is now the 8 optimized features
   const [formData, setFormData] = useState({
     // Numeric (5)
@@ -27,10 +37,7 @@ function PredictorPage() {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // --- 1. THIS IS THE CHANGE ---
-  // We're getting the new 'addPrediction' function from our (upgraded) context
-  const { addPrediction } = usePrediction();
-  // --- END OF CHANGE ---
+  const { addPrediction } = usePrediction(); // Use addPrediction for history
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -70,20 +77,17 @@ function PredictorPage() {
     try {
       // Call the single, optimized /api/predict route
       const response = await axios.post(
-        'http://127.0.0.1:5000/api/predict',
+        'https://healthprism-api-2025.onrender.com/api/predict',
         payload
       );
       
       const riskScore = response.data.probability_high_risk;
-
-      // --- 2. THIS IS THE CHANGE ---
-      // We now call 'addPrediction' and save the *entire*
-      // prediction (score + inputs) to our history.
+      
+      // Save to global "brain" (which saves to history)
       addPrediction({
         probability_high_risk: riskScore,
         inputs: payload 
       });
-      // --- END OF CHANGE ---
       
       setResult(response.data); // Save for local display
 

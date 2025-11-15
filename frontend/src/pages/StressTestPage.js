@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+// frontend/src/pages/StressTestPage.js
+
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './StressTestPage.css'; // We'll create this next
+// --- THIS IS THE CHANGE ---
+import './StressTestPage.css'; // We're importing our NEW CSS file
+// --- END OF CHANGE ---
 import { FaBrain } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
@@ -26,6 +30,9 @@ function StressResultCard({ level }) {
 }
 
 function StressTestPage() {
+  useEffect(() => {
+    document.title = 'Stress Risk Predictor - HealthPrism';
+  }, []);
   const [formData, setFormData] = useState({
     Age: '30',
     Gender: 'Male',
@@ -59,7 +66,7 @@ function StressTestPage() {
 
     try {
       const response = await axios.post(
-        'http://127.0.0.1:5000/api/predict-stress',
+        'https://healthprism-api-2025.onrender.com/api/predict-stress',
         formData // Send the raw form data
       );
       setResult(response.data.stress_level);
@@ -138,7 +145,7 @@ function StressTestPage() {
         {result && (
           <>
             <StressResultCard level={result} />
-            {/* This is the "advanced" part: a button to your AI coach */}
+            {/* This is the CTA to your *other* stress page */}
             <div className="coach-cta">
               <h3>Not sure what to do next?</h3>
               <p>Get a personalized plan from our AI Stress Coach.</p>

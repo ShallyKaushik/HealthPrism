@@ -1,11 +1,16 @@
 /* frontend/src/components/Footer.css */
 
+/* --- NEW LIGHT-THEME & COMPACT DESIGN --- */
 .footer-container {
   width: 100%;
-  background-color: var(--color-bg-white);
-  border-top: 1px solid var(--color-border);
-  margin-top: auto; /* This pushes the footer to the bottom */
-  padding-top: 60px;
+  /* Fix "Too Bold": Use the light grey bg, not dark */
+  background-color: var(--color-bg); 
+  /* Use the subtle border from the navbar */
+  border-top: 1px solid var(--color-border); 
+  margin-top: auto; /* Pushes footer to bottom */
+  
+  /* Fix "Too Much Space": Reduced top padding */
+  padding-top: 40px; 
 }
 
 .footer-content {
@@ -15,20 +20,20 @@
   padding: 0 24px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 40px;
+  gap: 32px; /* Reduced gap */
 }
 
 .footer-column h4 {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--color-text);
-  margin-bottom: 20px;
+  color: var(--color-text); /* Use standard text color */
+  margin-bottom: 16px; /* Reduced margin */
 }
 
 .footer-logo {
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--color-text);
+  color: var(--color-text); /* Use standard text color */
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -38,7 +43,7 @@
 
 .footer-mission {
   font-size: 0.9rem;
-  color: var(--color-text-light);
+  color: var(--color-text-light); /* Standard light text */
   line-height: 1.6;
   max-width: 300px;
 }
@@ -53,13 +58,13 @@
 }
 
 .footer-links a {
-  color: var(--color-text-light);
+  color: var(--color-text-light); /* Standard light text */
   text-decoration: none;
   transition: color 0.2s;
 }
 
 .footer-links a:hover {
-  color: var(--color-primary);
+  color: var(--color-primary); /* Blue hover */
 }
 
 .footer-social-icons {
@@ -80,9 +85,12 @@
 .footer-bottom-bar {
   width: 100%;
   max-width: 1280px;
-  margin: 40px auto 0;
-  padding: 20px 24px;
-  border-top: 1px solid var(--color-border);
+  
+  /* Fix "Too Much Space": Reduced margin & padding */
+  margin: 24px auto 0; 
+  padding: 16px 24px; 
+
+  border-top: 1px solid var(--color-border); 
   text-align: center;
   font-size: 0.875rem;
   color: var(--color-text-light);

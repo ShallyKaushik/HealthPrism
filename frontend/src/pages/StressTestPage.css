@@ -1,4 +1,145 @@
+/* frontend/src/pages/StressTestPage.css */
 
+/* --- Container --- */
+.stress-test-container {
+  width: 100%;
+  max-width: 1000px; /* A wide, comfortable card */
+  margin: 40px auto; /* Space from the navbar and footer */
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+/* --- The Card --- */
+.stress-test-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.07);
+  overflow: hidden;
+}
+
+/* --- Card Header (NEW PURPLE THEME) --- */
+.stress-test-header {
+  padding: 32px;
+  text-align: center;
+  /* AI-themed purple gradient */
+  background: linear-gradient(135deg, var(--color-accent) 0%, #a855f7 100%);
+  color: white;
+}
+
+.stress-test-header .header-icon {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 16px;
+  color: #FFFFFF;
+}
+
+.stress-test-header h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin: 0 0 8px 0;
+}
+
+.stress-test-header p {
+  font-size: 1rem;
+  color: #FFFFFF;
+  opacity: 0.9;
+  margin: 0;
+}
+
+/* --- The Form Itself --- */
+.prediction-form {
+  padding: 32px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+}
+
+/* --- Form Inputs & Labels (PURPLE FOCUS) --- */
+.prediction-form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.875rem; /* 14px */
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.prediction-form input[type="number"],
+.prediction-form input[type="text"],
+.prediction-form select {
+  margin-top: 8px;
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  color: var(--color-text);
+  background-color: #F9FAFB;
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  box-sizing: border-box; 
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  transition: all 0.2s ease-in-out;
+}
+
+/* --- NEW: Modern focus state --- */
+.prediction-form input[type="number"]:focus,
+.prediction-form input[type="text"]:focus,
+.prediction-form select:focus {
+  outline: none;
+  border-color: var(--color-accent); /* Purple glow */
+  box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
+}
+
+/* --- Submit Button (NEW PURPLE THEME) --- */
+.submit-button {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  background-color: var(--color-accent); /* AI purple */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 32px;
+  transition: all 0.2s;
+}
+
+.submit-button:hover {
+  background-color: #8628d9; /* Darker purple */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(147, 51, 234, 0.3);
+}
+
+.submit-button:disabled {
+  background-color: #9CA3AF;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* --- Result Area --- */
+.results-container {
+  margin-top: 40px;
+  width: 100%;
+}
+
+.error-message {
+  color: #e74c3c;
+  font-weight: bold;
+  background-color: #fbeae9;
+  border: 1px solid #e74c3c;
+  padding: 15px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+/* --- Specific Styles for Stress Result --- */
 .stress-result-card {
   background: var(--color-bg-white);
   border-radius: 16px;
