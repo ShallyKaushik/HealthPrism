@@ -1,6 +1,6 @@
 // frontend/src/pages/NutritionPage.js
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import './NutritionPage.css';
 import { FaFish, FaLeaf, FaCarrot, FaChevronRight } from 'react-icons/fa';
 import NutritionPlanner from '../components/NutritionPlanner'; // <-- 1. IMPORT IT
@@ -11,6 +11,11 @@ const mealImg2 = '...';
 const mealImg3 = '...';
 
 function NutritionPage() {
+
+  
+    useEffect(() => {
+      document.title = 'Nutrition :)';
+    }, []);
   return (
     <div className="nutrition-page-container">
       

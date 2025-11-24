@@ -8,6 +8,11 @@ import axios from 'axios';
 import { usePrediction } from '../context/PredictionContext'; // <-- 1. IMPORT THE "GLOBAL BRAIN"
 
 function ChatbotPage() {
+
+  useEffect(() => {
+    document.title = 'Chatbot :)';
+  }, []);
+
   const [messages, setMessages] = useState([
     {
       from: 'bot',
