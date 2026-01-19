@@ -1,4 +1,4 @@
-/* frontend/src/pages/ChatbotPage.css */
+/* frontend/src/pages/ChatbotPage.css - Fixed Syntax */
 
 .chatbot-page-container {
   display: flex;
@@ -10,7 +10,8 @@
 .chatbot-window {
   width: 100%;
   max-width: 800px;
-  height: 70vh; /* 70% of the viewport height */
+  height: 70vh;
+  /* 70% of the viewport height */
   display: flex;
   flex-direction: column;
   background-color: var(--color-bg-white);
@@ -22,7 +23,8 @@
 
 /* --- Header --- */
 .chatbot-header {
-  background: var(--color-primary); /* Use our theme blue */
+  background: var(--color-primary);
+  /* Use our theme blue */
   color: white;
   padding: 16px 24px;
   font-size: 1.25rem;
@@ -37,7 +39,8 @@
 .chatbot-messages {
   flex-grow: 1;
   padding: 24px;
-  overflow-y: auto; /* Make messages scrollable */
+  overflow-y: auto;
+  /* Make messages scrollable */
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -46,8 +49,10 @@
 .chat-bubble-container {
   display: flex;
 }
+
 .chat-bubble-container.user {
-  justify-content: flex-end; /* Align user messages to the right */
+  justify-content: flex-end;
+  /* Align user messages to the right */
 }
 
 .chat-bubble {
@@ -78,6 +83,7 @@
   padding: 12px 18px;
   display: inline-block;
 }
+
 .typing-indicator span {
   height: 8px;
   width: 8px;
@@ -88,15 +94,26 @@
   opacity: 0.6;
   animation: typing-bounce 1s infinite;
 }
+
 .typing-indicator span:nth-of-type(2) {
   animation-delay: 0.15s;
 }
+
 .typing-indicator span:nth-of-type(3) {
   animation-delay: 0.3s;
 }
+
 @keyframes typing-bounce {
-  0%, 60%, 100% { transform: translateY(0); }
-  30% { transform: translateY(-4px); }
+
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+  }
+
+  30% {
+    transform: translateY(-4px);
+  }
 }
 
 
@@ -122,6 +139,7 @@
   font-family: 'Manrope', 'Inter', sans-serif;
   color: var(--color-text);
 }
+
 .chatbot-input-form input[type="text"]:focus {
   outline: none;
   border-color: var(--color-primary);
@@ -143,9 +161,11 @@
   justify-content: center;
   transition: background-color 0.2s;
 }
+
 .chatbot-input-form button:hover {
   background-color: var(--color-primary-dark);
 }
+
 .chatbot-input-form button:disabled {
   background-color: var(--color-border);
   cursor: not-allowed;
