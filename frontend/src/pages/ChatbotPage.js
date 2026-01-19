@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 // import { Link } from 'react-router-dom';
-import './ChatbotPage.css'; 
+import './ChatbotPage.css';
 import { FaCommentDots, FaPaperPlane } from 'react-icons/fa';
 import axios from 'axios';
 import { usePrediction } from '../context/PredictionContext'; // <-- 1. IMPORT THE "GLOBAL BRAIN"
@@ -21,7 +21,7 @@ function ChatbotPage() {
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const messagesContainerRef = useRef(null);
   const { latestPrediction } = usePrediction(); // <-- 2. GET THE LATEST RISK SCORE
 
@@ -37,10 +37,10 @@ function ChatbotPage() {
 
     const userMessage = { from: 'user', text: input };
     const newMessages = [...messages, userMessage];
-    
+
     setMessages(newMessages);
     setIsLoading(true);
-    setInput(''); 
+    setInput('');
 
     try {
       // --- 3. THIS IS THE NEW, SMARTER PAYLOAD ---
@@ -51,12 +51,14 @@ function ChatbotPage() {
       };
       // --- END OF NEW PAYLOAD ---
 
+      // Use environment variable for API URL
+      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
       const response = await axios.post(
-        'https://healthprism-api-2025.onrender.com/api/chatbot', 
+        `${API_URL}/api/chatbot`,
         payload // Send the new payload
       );
 
-      
+
       const botMessage = { from: 'bot', text: response.data.answer };
       setMessages(prevMessages => [...prevMessages, botMessage]);
 
@@ -65,7 +67,7 @@ function ChatbotPage() {
       const errorMessage = { from: 'bot', text: "Sorry, I'm having a little trouble thinking right now. Please try again later." };
       setMessages(prevMessages => [...prevMessages, errorMessage]);
     } finally {
-      setIsLoading(false); 
+      setIsLoading(false);
     }
   };
 
@@ -77,7 +79,7 @@ function ChatbotPage() {
           <FaCommentDots />
           <span>AI HealthBot</span>
         </div>
-        
+
         {/* Messages */}
         <div className="chatbot-messages" ref={messagesContainerRef}>
           {messages.map((msg, index) => (
@@ -98,7 +100,7 @@ function ChatbotPage() {
           )}
 
         </div>
-        
+
         {/* THE INPUT FORM */}
         <form className="chatbot-input-form" onSubmit={handleSubmit}>
           <input

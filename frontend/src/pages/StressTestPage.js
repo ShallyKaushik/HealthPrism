@@ -52,7 +52,7 @@ function StressTestPage() {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value 
+      [name]: value
     }));
   };
 
@@ -63,8 +63,10 @@ function StressTestPage() {
     setError(null);
 
     try {
+      // Use environment variable for API URL
+      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
       const response = await axios.post(
-        'http://127.0.0.1:5000/api/predict-stress',
+        `${API_URL}/api/predict-stress`,
         formData // Send the raw form data
       );
       setResult(response.data.stress_level);
@@ -87,10 +89,10 @@ function StressTestPage() {
 
         <form className="prediction-form" onSubmit={handleSubmit}>
           <div className="form-grid">
-            
+
             {/* --- All 10 Features --- */}
             <label>Age
-              <input type="number" name="Age" value={formData.Age} onChange={handleChange} required min="1" max="120"/>
+              <input type="number" name="Age" value={formData.Age} onChange={handleChange} required min="1" max="120" />
             </label>
             <label>Gender
               <select name="Gender" value={formData.Gender} onChange={handleChange} required>
@@ -105,7 +107,7 @@ function StressTestPage() {
               <input type="number" step="0.1" name="Sleep Duration" value={formData['Sleep Duration']} onChange={handleChange} required />
             </label>
             <label>Quality of Sleep (1-10)
-              <input type="number" name="Quality of Sleep" value={formData['Quality of Sleep']} onChange={handleChange} required min="1" max="10"/>
+              <input type="number" name="Quality of Sleep" value={formData['Quality of Sleep']} onChange={handleChange} required min="1" max="10" />
             </label>
             <label>Physical Activity (mins/day)
               <input type="number" name="Physical Activity Level" value={formData['Physical Activity Level']} onChange={handleChange} required />
@@ -139,7 +141,7 @@ function StressTestPage() {
       {/* --- Result Area --- */}
       <div className="results-container">
         {error && <div className="error-message">{error}</div>}
-        
+
         {result && (
           <>
             <StressResultCard level={result} />
@@ -147,8 +149,8 @@ function StressTestPage() {
             <div className="coach-cta">
               <h3>Not sure what to do next?</h3>
               <p>Get a personalized plan from our AI Stress Coach.</p>
-              <button 
-                className="coach-button" 
+              <button
+                className="coach-button"
                 onClick={() => navigate('/stress')}
               >
                 Go to AI Stress Coach

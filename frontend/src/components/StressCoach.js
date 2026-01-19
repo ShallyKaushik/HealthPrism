@@ -34,8 +34,10 @@ function StressCoach() {
     // --- END OF NEW PAYLOAD ---
 
     try {
+      // Use environment variable for API URL
+      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
       const response = await axios.post(
-        'https://healthprism-api-2025.onrender.com/api/stress-coach',
+        `${API_URL}/api/stress-coach`,
         payload
       );
       setPlan(response.data.stress_plan);
@@ -68,7 +70,7 @@ function StressCoach() {
             required
           />
         </label>
-        
+
         <button type="submit" className="generate-button" disabled={isLoading}>
           {isLoading ? 'Generating...' : (
             <>
@@ -81,7 +83,7 @@ function StressCoach() {
 
       {/* --- The Result (No change) --- */}
       {error && <div className="coach-error">{error}</div>}
-      
+
       {plan && (
         <div className="coach-result">
           <h3>Here is your personalized stress plan:</h3>

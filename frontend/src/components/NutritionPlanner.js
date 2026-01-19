@@ -39,8 +39,10 @@ function NutritionPlanner() {
     // --- END OF NEW PAYLOAD ---
 
     try {
+      // Use environment variable for API URL
+      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
       const response = await axios.post(
-        'https://healthprism-api-2025.onrender.com/api/nutrition-planner',
+        `${API_URL}/api/nutrition-planner`,
         payload // Send the new, combined payload
       );
       setMealPlan(response.data.meal_plan);
@@ -113,7 +115,7 @@ function NutritionPlanner() {
 
       {/* --- The Result --- */}
       {error && <div className="planner-error">{error}</div>}
-      
+
       {mealPlan && (
         <div className="planner-result">
           <h3>Here is your 3-Day Sample Plan:</h3>

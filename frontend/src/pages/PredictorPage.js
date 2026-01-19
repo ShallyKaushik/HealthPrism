@@ -76,8 +76,10 @@ function PredictorPage() {
     
     try {
       // Call the single, optimized /api/predict route
+      // Use environment variable for API URL
+      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
       const response = await axios.post(
-        'https://healthprism-api-2025.onrender.com/api/predict',
+        `${API_URL}/api/predict`,
         payload
       );
       
