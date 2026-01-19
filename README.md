@@ -52,3 +52,84 @@ Follow these steps to run the project locally.
 ```bash
 git clone https://github.com/ShallyKaushik/HealthPrism
 cd HealthPrism
+
+### 2. Backend Setup (Flask)
+Navigate to the backend folder and set up the Python environment.
+
+Bash
+
+cd backend
+
+# Create a virtual environment
+python -m venv venv
+
+# Activate the virtual environment
+# Windows:
+venv\Scripts\activate
+# Mac/Linux:
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Create a .env file for your API Key
+# Add this line to the file: GEMINI_API_KEY=your_api_key_here
+Training the Models (First Time Only):
+
+Bash
+
+# Train the Heart & Stress models to generate the .joblib files
+python train_optimized_model.py
+python train_stress_model.py
+Start the Server:
+
+Bash
+
+python app.py
+The backend will run on http://127.0.0.1:5000
+
+### 3. Frontend Setup (React)
+Open a new terminal and navigate to the frontend folder.
+
+Bash
+
+cd frontend
+
+# Install Node modules
+npm install
+
+# Start the React App
+npm start
+The frontend will launch on http://localhost:3000
+
+📂 Project Structure
+HealthPrism/
+├── backend/
+│   ├── app.py                 # Main Flask API Application
+│   ├── heart_risk_pipeline.joblib  # Trained Heart ML Model
+│   ├── stress_model.joblib         # Trained Stress ML Model
+│   ├── train_models.py        # Scripts to train ML models
+│   └── requirements.txt       # Python dependencies
+│
+└── frontend/
+    ├── src/
+    │   ├── components/        # Reusable UI (Navbar, ResultCard, etc.)
+    │   ├── context/           # PredictionContext (Global State)
+    │   ├── pages/             # Main Pages (Dashboard, Predictor, etc.)
+    │   └── App.js             # Main React Component
+    └── public/
+🔮 Future Scope
+Wearable Integration: Connecting real-time data from smartwatches.
+
+User Accounts: Implementing JWT authentication for cross-device syncing.
+
+Expanded Models: Adding Diabetes and Hypertension prediction models.
+
+👥 Contributors
+Souryapriya Choudhury
+
+Shelly Kaushik
+
+Aryan Gupta
+
+Made with ❤️ and Python.
