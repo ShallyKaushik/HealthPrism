@@ -1,6 +1,6 @@
 // frontend/src/pages/DashboardPage.js
 
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import './DashboardPage.css'; 
 
@@ -11,7 +11,7 @@ import {
 // --- END OF IMPORT ---
 
 import { 
-  FaStar, FaRegEdit, FaBrain, FaSeedling, 
+  FaRegEdit, FaBrain, FaSeedling, 
   FaHeartbeat, FaAppleAlt, FaMoon, FaCommentDots 
 } from 'react-icons/fa';
 
@@ -141,7 +141,7 @@ function DashboardPage() {
             <div className="feature-showcase-text">
               <div className="feature-showcase-icon" style={{color: '#e74c3c'}}><FaHeartbeat /></div>
               <h3>Heart Risk Prediction</h3>
-              <p>The core of our platform. Our AI model analyzes 8 key health metrics—selected by our team—to provide a precise, personalized risk score and explain the "why" behind it.</p>
+              <p>The core of our platform. Our AI model analyzes 8 key health metrics—selected by our team—to provide a precise, personalized risk score and explain the "why" behind it. Now includes rPPG heart rate measurement for accurate data.</p>
               <Link to="/predict" className="feature-showcase-button">Predict Your Risk</Link>
             </div>
             <div className="feature-showcase-image">

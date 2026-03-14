@@ -1,0 +1,29 @@
+/* frontend/src/pages/HeartMonitorPage.css */
+
+.heart-monitor-page {
+  min-height: 80vh;
+  padding: 20px;
+  background-color: #f4f7fa;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.heart-monitor-page h1 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.heart-monitor-page > .container > p {
+  text-align: center;
+  color: #555;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}

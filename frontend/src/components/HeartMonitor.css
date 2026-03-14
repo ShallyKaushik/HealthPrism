@@ -1,0 +1,129 @@
+/* frontend/src/components/HeartMonitor.css */
+
+.heart-monitor {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+}
+
+.heart-monitor h3 {
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.heart-monitor p {
+  color: #555;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.video-container {
+  position: relative;
+  margin: 20px 0;
+  display: inline-block;
+}
+
+.video-feed {
+  width: 100%;
+  max-width: 400px;
+  border: 2px solid #3498db;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+.countdown {
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  background-color: rgba(52, 152, 219, 0.8);
+  padding: 10px 20px;
+  border-radius: 50px;
+}
+
+.controls {
+  margin: 20px 0;
+}
+
+.start-btn {
+  padding: 12px 24px;
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.start-btn:hover:not(:disabled) {
+  background-color: #229954;
+}
+
+.start-btn:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+}
+
+.result {
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  border-radius: 6px;
+  color: #155724;
+}
+
+.result h4 {
+  margin: 0 0 10px 0;
+}
+
+.error {
+  color: #e74c3c;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  padding: 10px;
+  border-radius: 6px;
+  margin: 10px 0;
+}
+
+.tips {
+  margin-top: 20px;
+  text-align: left;
+  background-color: #fff3cd;
+  padding: 15px;
+  border: 1px solid #ffeaa7;
+  border-radius: 6px;
+}
+
+.tips h5 {
+  margin-top: 0;
+  color: #856404;
+}
+
+.tips ul {
+  margin: 10px 0 0 20px;
+  color: #856404;
+}
+
+.tips li {
+  margin-bottom: 5px;
+}

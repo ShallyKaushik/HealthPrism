@@ -3,7 +3,7 @@
 import React from 'react';
 import './RiskFactors.css'; // We'll create this next
 // Import some icons for our list
-import { FaArrowUp, FaArrowDown, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
+import { FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
 
 // --- THIS IS THE "RULES ENGINE" ---
 // It analyzes the form data and the final probability

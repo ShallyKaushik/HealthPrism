@@ -10,6 +10,8 @@ import './PredictorPage.css';
 import ResultCard from '../components/ResultCard';
 import { usePrediction } from '../context/PredictionContext';
 import RiskFactors from '../components/RiskFactors'; // Your "Explainability" component
+import HeartMonitor from '../components/HeartMonitor';
+import MedicalReportUpload from '../components/MedicalReportUpload';
 
 function PredictorPage() {
   
@@ -36,8 +38,26 @@ function PredictorPage() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showRPPG, setShowRPPG] = useState(false);
 
   const { addPrediction } = usePrediction(); // Use addPrediction for history
+
+  const handleHeartRateMeasured = (hr) => {
+    setFormData(prev => ({
+      ...prev,
+      thalach: hr.toString()
+    }));
+    setShowRPPG(false); // Hide the monitor after measurement
+  };
+
+  const handleDataExtracted = (extractedData) => {
+    setFormData(prev => ({
+      ...prev,
+      ...Object.fromEntries(
+        Object.entries(extractedData).filter(([_, v]) => v !== null).map(([k, v]) => [k, v.toString()])
+      )
+    }));
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -110,6 +130,9 @@ function PredictorPage() {
           <p>Enter your 8 key health metrics, selected by our AI, to get an instant risk prediction.</p>
         </div>
 
+        {/* Medical Report Upload */}
+        <MedicalReportUpload onDataExtracted={handleDataExtracted} />
+
         {/* --- The 8-Feature Form --- */}
         <form className="prediction-form" onSubmit={handleSubmit}>
           <div className="form-grid">
@@ -126,6 +149,9 @@ function PredictorPage() {
             </label>
             <label>Max Heart Rate (thalach)
               <input type="number" name="thalach" value={formData.thalach} onChange={handleChange} required min="60" max="220"/>
+              <button type="button" onClick={() => setShowRPPG(!showRPPG)} className="rppg-btn">
+                {showRPPG ? 'Cancel rPPG' : 'Measure with rPPG'}
+              </button>
             </label>
             <label>Oldpeak
               <input type="number" step="0.1" name="oldpeak" value={formData.oldpeak} onChange={handleChange} required min="0" max="10"/>
@@ -164,6 +190,14 @@ function PredictorPage() {
             {isLoading ? 'Analyzing...' : 'Predict Risk (Optimized Model)'}
           </button>
         </form>
+
+        {/* rPPG Heart Monitor */}
+        {showRPPG && (
+          <div className="rppg-section">
+            <HeartMonitor onHeartRateMeasured={handleHeartRateMeasured} />
+          </div>
+        )}
+
       </div>
 
       {/* --- This is the result area --- */}

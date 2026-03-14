@@ -2,13 +2,7 @@
 
 import React, {useEffect} from 'react';
 import './NutritionPage.css';
-import { FaFish, FaLeaf, FaCarrot, FaChevronRight } from 'react-icons/fa';
 import NutritionPlanner from '../components/NutritionPlanner'; // <-- 1. IMPORT IT
-
-// (Your placeholder meal image variables are here...)
-const mealImg1 = '...';
-const mealImg2 = '...';
-const mealImg3 = '...';
 
 function NutritionPage() {
 

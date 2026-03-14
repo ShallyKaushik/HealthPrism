@@ -11,29 +11,40 @@ from dotenv import load_dotenv
 # --- 1. IMPORTS FOR ADVANCED FEATURES ---
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import urllib3
+from rppg import extract_heart_rate
+import cv2
+import numpy as np
+import base64
+from report_parser import analyze_report
+from werkzeug.utils import secure_filename
+import tempfile
 
 # --- 2. SETUP ---
 load_dotenv()
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # --- 3. Initialize Application ---
 app = Flask(__name__)
 CORS(app) 
+app.config['MAX_CONTENT_LENGTH'] = 64 * 1024 * 1024  # 64MB limit
 
 # --- 4. Load ALL OUR ML Models ---
 
 # Model 1: Heart Risk (Optimized 8-Feature)
 try:
-    heart_model = joblib.load('heart_risk_pipeline.joblib')
-    print("✅ OPTIMIZED Heart Model (Top 8 Features) loaded successfully!")
+    heart_model_path = os.path.join(BASE_DIR, 'heart_risk_pipeline.joblib')
+    heart_model = joblib.load(heart_model_path)
+    print(f"✅ OPTIMIZED Heart Model loaded from {heart_model_path}")
 except Exception as e:
     print(f"❌ Error loading Heart model: {e}")
     heart_model = None
 
 # Model 2: Stress Predictor (NEW)
 try:
-    stress_model = joblib.load('stress_model.joblib')
-    print("✅ NEW Stress Model loaded successfully!")
+    stress_model_path = os.path.join(BASE_DIR, 'stress_model.joblib')
+    stress_model = joblib.load(stress_model_path)
+    print(f"✅ NEW Stress Model loaded from {stress_model_path}")
 except Exception as e:
     print(f"❌ Error loading Stress model: {e}")
     stress_model = None
@@ -240,6 +251,86 @@ def stress_coach():
         print(f"❌ Error processing stress plan request: {e}")
         return jsonify({'error': 'Sorry, I\'m facing a technical issue.'}), 500
 
-# --- 12. Run the Application ---
+# --- 12. rPPG Heart Rate Route ---
+@app.route('/api/rppg', methods=['POST'])
+def rppg_heart_rate():
+    try:
+        data = request.json
+        frames_b64 = data.get('frames', [])
+        fps = data.get('fps', 30)
+
+        if not frames_b64 or len(frames_b64) < 100:
+            return jsonify({'error': 'At least 100 frames required for accurate measurement'}), 400
+
+        print(f"DEBUG: Received {len(frames_b64)} frames. Approximate payload size: {len(request.data) / 1024 / 1024:.2f} MB")
+
+        # Decode frames
+        frames = []
+        for i, b64 in enumerate(frames_b64):
+            try:
+                img_data = base64.b64decode(b64.split(',')[1])
+                np_arr = np.frombuffer(img_data, np.uint8)
+                img = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+                if img is not None:
+                    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+                    frames.append(img)
+            except Exception as e:
+                continue
+
+        print(f"DEBUG: Successfully decoded {len(frames)} frames.")
+
+        if len(frames) < 50:
+            return jsonify({'error': 'Not enough valid frames decoded'}), 400
+
+        print("DEBUG: Starting heart rate extraction...")
+        heart_rate = extract_heart_rate(frames, fps)
+        print(f"DEBUG: Heart rate extraction successful: {heart_rate}")
+        return jsonify({'heart_rate': heart_rate, 'message': 'Heart rate measured successfully'}), 200
+
+    except ValueError as e:
+        print(f"DEBUG: ValueError in rPPG: {e}")
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        import traceback
+        print(f"❌ Error in rPPG: {e}")
+        traceback.print_exc()
+        return jsonify({'error': 'Internal server error during heart rate processing'}), 500
+
+# --- 13. Medical Report Analysis Route ---
+@app.route('/api/analyze-report', methods=['POST'])
+def analyze_medical_report():
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+    
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+
+    if file:
+        filename = secure_filename(file.filename)
+        # Save to temp file
+        with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(filename)[1]) as tmp:
+            file.save(tmp.name)
+            tmp_path = tmp.name
+
+        try:
+            results = analyze_report(tmp_path)
+            # Remove temp file
+            os.remove(tmp_path)
+            
+            if "error" in results:
+                return jsonify({'error': results['error']}), 422 # Unprocessable Entity
+                
+            return jsonify({
+                'message': 'Report analyzed successfully',
+                'extracted_data': results
+            }), 200
+        except Exception as e:
+            if os.path.exists(tmp_path):
+                os.remove(tmp_path)
+            print(f"❌ Error during report analysis: {e}")
+            return jsonify({'error': f'Analysis failed: {str(e)}'}), 500
+
+# --- 14. Run the Application ---
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
