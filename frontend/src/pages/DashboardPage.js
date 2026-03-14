@@ -16,6 +16,7 @@ import {
 } from 'react-icons/fa';
 
 import { usePrediction } from '../context/PredictionContext';
+import { useAuth } from '../context/AuthContext';
 import ResultCard from '../components/ResultCard';
 
 // --- CLEAN ILLUSTRATION URLS (Replaced the base64 data) ---
@@ -32,8 +33,13 @@ function DashboardPage() {
   useEffect(() => {
     document.title = 'Features :)';
   }, []);
-  // --- 2. GET THE FULL HISTORY & LATEST SCORE ---
-  const { predictionHistory, latestPrediction } = usePrediction();
+  const { user } = useAuth();
+  const { predictionHistory, latestPrediction, loading } = usePrediction();
+
+  useEffect(() => {
+    console.log("DEBUG: DashboardPage loaded. User:", user?.email);
+    console.log("DEBUG: History records:", predictionHistory.length);
+  }, [user, predictionHistory]);
 
   // Format the data for the chart
   // We reverse it and format the date
@@ -54,8 +60,8 @@ function DashboardPage() {
         {latestPrediction === null ? (
           // --- STATE 1: NO PREDICTION YET ---
           <div className="welcome-prompt-card">
-            <h2>Welcome to HeartHealth!</h2>
-            <p>Get your free, anonymous heart risk score in just 2 minutes.</p>
+            <h2>Welcome to HealthPrism, {user?.fullname}!</h2>
+            <p>Get your free, heart risk score in just 2 minutes.</p>
             <Link to="/predict" className="hero-button-primary">
               Get Started Now
             </Link>

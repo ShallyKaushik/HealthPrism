@@ -11,17 +11,65 @@ from dotenv import load_dotenv
 # --- 1. IMPORTS FOR ADVANCED FEATURES ---
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import urllib3
+import jwt
+import bcrypt
+import datetime
+from functools import wraps
+from pymongo import MongoClient
+from bson.objectid import ObjectId
 
 # --- 2. SETUP ---
 load_dotenv()
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-# --- 3. Initialize Application ---
-app = Flask(__name__)
-CORS(app) 
-# Update Flask to serve the React build folder from the project root
 app = Flask(__name__, static_folder='../frontend/build', static_url_path='/')
 CORS(app)
+
+# --- 3.1 MongoDB Setup ---
+mongo_uri = os.getenv("MONGO_URI")
+client = MongoClient(mongo_uri)
+db = client['HealthPrism']
+users_collection = db.users
+heart_predictions_collection = db.heart_predictions
+stress_predictions_collection = db.stress_predictions
+
+print(f"DEBUG: Connected to MongoDB. Database: {db.name}")
+print(f"DEBUG: Collections: {db.list_collection_names()}")
+
+# --- 3.2 JWT & Auth Helpers ---
+SECRET_KEY = os.getenv("SECRET_KEY", "your_secret_key")
+JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "your_jwt_secret_key")
+
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = None
+        if 'Authorization' in request.headers:
+            auth_header = request.headers['Authorization']
+            if auth_header.startswith('Bearer '):
+                token = auth_header.split(" ")[1]
+        
+        if not token:
+            return jsonify({'error': 'Token is missing!'}), 401
+        
+        try:
+            data = jwt.decode(token, JWT_SECRET_KEY, algorithms=["HS256"])
+            current_user = users_collection.find_one({'_id': ObjectId(data['user_id'])})
+            if not current_user:
+                return jsonify({'error': 'User not found!'}), 401
+        except Exception as e:
+            return jsonify({'error': 'Token is invalid!', 'message': str(e)}), 401
+            
+        return f(current_user, *args, **kwargs)
+    return decorated
+
+def admin_required(f):
+    @wraps(f)
+    def decorated(current_user, *args, **kwargs):
+        if not current_user.get('is_admin', False):
+            return jsonify({'error': 'Admin privilege required!'}), 403
+        return f(current_user, *args, **kwargs)
+    return decorated
 
 # --- 4. Load ALL OUR ML Models ---
 
@@ -135,6 +183,161 @@ def predict_stress():
         print(f"❌ Error during stress prediction: {e}")
         return jsonify({'error': f'Internal server error: {e}'}), 500
 # --- END OF NEW STRESS ROUTE ---
+
+
+# --- 8.1 AUTH ROUTES ---
+
+@app.route('/api/register', methods=['POST'])
+def register():
+    try:
+        data = request.json
+        if not data or not data.get('email') or not data.get('password') or not data.get('fullname'):
+            return jsonify({'error': 'Name, email and password are required'}), 400
+        
+        fullname = data.get('fullname')
+        email = data.get('email')
+        password = data.get('password')
+        
+        if len(password) < 8:
+            return jsonify({'error': 'Password must be at least 8 characters long'}), 400
+
+        if users_collection.find_one({'email': email}):
+            return jsonify({'error': 'User with this email already exists'}), 400
+            
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        
+        user_id = users_collection.insert_one({
+            'fullname': fullname,
+            'email': email,
+            'password': hashed_password,
+            'is_admin': data.get('is_admin', False),
+            'created_at': datetime.datetime.utcnow()
+        }).inserted_id
+        
+        return jsonify({'message': 'User registered successfully', 'user_id': str(user_id)}), 201
+    except Exception as e:
+         return jsonify({'error': f'Internal server error: {e}'}), 500
+
+@app.route('/api/login', methods=['POST'])
+def login():
+    try:
+        data = request.json
+        if not data or not data.get('email') or not data.get('password'):
+            return jsonify({'error': 'Email and password are required'}), 400
+            
+        email = data.get('email')
+        password = data.get('password')
+        
+        user = users_collection.find_one({'email': email})
+        if not user or not bcrypt.checkpw(password.encode('utf-8'), user['password']):
+            return jsonify({'error': 'Invalid email or password'}), 401
+            
+        token = jwt.encode({
+            'user_id': str(user['_id']),
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
+        }, JWT_SECRET_KEY, algorithm="HS256")
+        
+        return jsonify({
+            'message': 'Login successful',
+            'access_token': token,
+            'user': {
+                'fullname': user['fullname'],
+                'email': user['email'],
+                'is_admin': user.get('is_admin', False)
+            }
+        }), 200
+    except Exception as e:
+        return jsonify({'error': f'Internal server error: {e}'}), 500
+
+@app.route('/api/debug/db', methods=['GET'])
+def debug_db():
+    try:
+        stats = {
+            'db_name': db.name,
+            'collections': db.list_collection_names(),
+            'user_count': users_collection.count_documents({}),
+            'heart_count': heart_predictions_collection.count_documents({}),
+            'stress_count': stress_predictions_collection.count_documents({})
+        }
+        return jsonify(stats), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/admin/users', methods=['GET'])
+@token_required
+@admin_required
+def get_all_users(current_user):
+    try:
+        users = list(users_collection.find({}, {'password': 0}))
+        for user in users:
+            user['_id'] = str(user['_id'])
+        return jsonify({'users': users}), 200
+    except Exception as e:
+        return jsonify({'error': f'Internal server error: {e}'}), 500
+
+# --- 8.2 PREDICTION STORAGE ROUTES ---
+
+@app.route('/api/predictions/heart', methods=['POST'])
+@token_required
+def save_heart_prediction(current_user):
+    print(f"DEBUG: save_heart_prediction called by {current_user['email']}")
+    try:
+        data = request.json
+        print(f"DEBUG: Received data: {data}")
+        prediction_entry = {
+            'user_id': str(current_user['_id']),
+            'probability': data.get('probability'),
+            'inputs': data.get('inputs'),
+            'timestamp': datetime.datetime.utcnow()
+        }
+        result = heart_predictions_collection.insert_one(prediction_entry)
+        print(f"DEBUG: Successfully saved heart prediction: {result.inserted_id}")
+        return jsonify({'message': 'Heart prediction saved successfully'}), 201
+    except Exception as e:
+        print(f"DEBUG: ERROR saving heart prediction: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/predictions/heart', methods=['GET'])
+@token_required
+def get_heart_history(current_user):
+    try:
+        history = list(heart_predictions_collection.find({'user_id': str(current_user['_id'])}).sort('timestamp', -1))
+        for item in history:
+            item['_id'] = str(item['_id'])
+        return jsonify({'history': history}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/predictions/stress', methods=['POST'])
+@token_required
+def save_stress_prediction(current_user):
+    print(f"DEBUG: save_stress_prediction called by {current_user['email']}")
+    try:
+        data = request.json
+        print(f"DEBUG: Received data: {data}")
+        prediction_entry = {
+            'user_id': str(current_user['_id']),
+            'stress_level': data.get('stress_level'),
+            'inputs': data.get('inputs'),
+            'timestamp': datetime.datetime.utcnow()
+        }
+        result = stress_predictions_collection.insert_one(prediction_entry)
+        print(f"DEBUG: Successfully saved stress prediction: {result.inserted_id}")
+        return jsonify({'message': 'Stress prediction saved successfully'}), 201
+    except Exception as e:
+        print(f"DEBUG: ERROR saving stress prediction: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/predictions/stress', methods=['GET'])
+@token_required
+def get_stress_history(current_user):
+    try:
+        history = list(stress_predictions_collection.find({'user_id': str(current_user['_id'])}).sort('timestamp', -1))
+        for item in history:
+            item['_id'] = str(item['_id'])
+        return jsonify({'history': history}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 # --- 9. AI CHATBOT ROUTE (GenAI) ---

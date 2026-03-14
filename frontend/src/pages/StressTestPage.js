@@ -3,6 +3,7 @@ import axios from 'axios';
 import './StressTestPage.css'; // We'll create this next
 import { FaBrain } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { usePrediction } from '../context/PredictionContext';
 
 // We'll create a simple result card for this page
 function StressResultCard({ level }) {
@@ -48,6 +49,8 @@ function StressTestPage() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
+  const { addStressPrediction } = usePrediction();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -63,13 +66,22 @@ function StressTestPage() {
     setError(null);
 
     try {
-      // Use environment variable for API URL
-      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+      const API_URL = 'http://127.0.0.1:5000/api';
+      console.log("DEBUG: StressTestPage calling:", `${API_URL}/predict-stress`);
+      
       const response = await axios.post(
-        `${API_URL}/api/predict-stress`,
+        `${API_URL}/predict-stress`,
         formData // Send the raw form data
       );
-      setResult(response.data.stress_level);
+      const stressLevel = response.data.stress_level;
+      setResult(stressLevel);
+      
+      // Save to backend
+      console.log("DEBUG: StressTestPage calling addStressPrediction with level:", stressLevel);
+      await addStressPrediction({
+        stress_level: stressLevel,
+        inputs: formData
+      });
     } catch (err) {
       console.error("❌ Prediction error:", err);
       setError(err.response?.data?.error || "An unexpected error occurred.");

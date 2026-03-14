@@ -6,14 +6,15 @@ import { useAuth } from '../context/AuthContext';
 import './AuthForm.css'; // Import the shared CSS
 
 function RegisterPage() {
-  const [username, setUsername] = useState('');
+  const [fullname, setFullname] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   // Use 'loading' from context to disable the button
   const { register, error, loading } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await register(username, password);
+    await register(fullname, email, password);
     // The context handles navigation on success
   };
 
@@ -33,13 +34,26 @@ function RegisterPage() {
           {error && <div className="auth-error">{error}</div>}
 
           <div className="auth-form-group">
-            <label htmlFor="username">Username</label>
+            <label htmlFor="fullname">Full Name</label>
             <input
               type="text"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              id="fullname"
+              value={fullname}
+              onChange={(e) => setFullname(e.target.value)}
               required
+              placeholder="Enter your full name"
+            />
+          </div>
+
+          <div className="auth-form-group">
+            <label htmlFor="email">Email Address</label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              placeholder="Enter your email"
             />
           </div>
           
@@ -51,7 +65,8 @@ function RegisterPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              minLength={6} // Good to enforce a minimum
+              minLength={8} // Enforce minimum 8 characters
+              placeholder="Min. 8 characters"
             />
           </div>
 

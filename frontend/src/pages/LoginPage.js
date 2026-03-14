@@ -6,14 +6,14 @@ import { useAuth } from '../context/AuthContext';
 import './AuthForm.css'; // Import the shared CSS
 
 function LoginPage() {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   // Get login function, loading state, and error from context
   const { login, error, loading } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await login(username, password);
+    await login(email, password);
     // The context handles navigation on success
   };
 
@@ -33,13 +33,14 @@ function LoginPage() {
           {error && <div className="auth-error">{error}</div>}
           
           <div className="auth-form-group">
-            <label htmlFor="username">Username</label>
+            <label htmlFor="email">Email Address</label>
             <input
-              type="text"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
+              placeholder="Enter your email"
             />
           </div>
           
