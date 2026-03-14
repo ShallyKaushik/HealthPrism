@@ -25,7 +25,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # --- 3. Initialize Application ---
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../frontend/build', static_url_path='/')
 CORS(app) 
 app.config['MAX_CONTENT_LENGTH'] = 64 * 1024 * 1024  # 64MB limit
 
@@ -40,13 +40,12 @@ except Exception as e:
     print(f"❌ Error loading Heart model: {e}")
     heart_model = None
 
-# Model 2: Stress Predictor (NEW)
+# Model 2: Stress Predictor (NEW v2 with NLP)
 try:
-    stress_model_path = os.path.join(BASE_DIR, 'stress_model.joblib')
-    stress_model = joblib.load(stress_model_path)
-    print(f"✅ NEW Stress Model loaded from {stress_model_path}")
+    stress_model = joblib.load('stress_model_v2.joblib')
+    print("✅ NEW Stress Model v2 (with NLP) loaded successfully!")
 except Exception as e:
-    print(f"❌ Error loading Stress model: {e}")
+    print(f"❌ Error loading Stress model v2: {e}")
     stress_model = None
 # --- END OF MODEL LOADING ---
 
@@ -64,12 +63,22 @@ ALL_HEART_FEATURES = HEART_NUMERIC_FEATURES + HEART_CATEGORICAL_FEATURES
 STRESS_NUMERIC_FEATURES = [
     'Age', 'Sleep Duration', 'Quality of Sleep', 
     'Physical Activity Level', 'Heart Rate', 'Daily Steps',
-    'Systolic BP', 'Diastolic BP'
+    'Systolic BP', 'Diastolic BP', 'Sentiment_Score'
 ]
 STRESS_CATEGORICAL_FEATURES = [
     'Gender', 'Occupation', 'BMI Category'
 ]
 ALL_STRESS_FEATURES = STRESS_NUMERIC_FEATURES + STRESS_CATEGORICAL_FEATURES
+
+# --- NEW: CATCH-ALL ROUTE TO SERVE REACT APP ---
+# This must be defined before your /api routes
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve(path):
+    if path != "" and os.path.exists(app.static_folder + '/' + path):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, 'index.html')
 
 
 # --- 7. Heart Prediction Route ---
@@ -96,7 +105,7 @@ def predict():
         print(f" Error during heart prediction: {e}")
         return jsonify({'error': f'Internal server error: {e}'}), 500
 
-# --- 8. NEW: Stress Prediction Route ---
+# --- 8. NEW: Stress Prediction Route (V2 with NLP) ---
 @app.route('/api/predict-stress', methods=['POST'])
 def predict_stress():
     if stress_model is None:
@@ -106,7 +115,17 @@ def predict_stress():
         if not data:
             return jsonify({'error': 'No JSON data received'}), 400
         
-        # We need to handle the Blood Pressure string split
+        # 1. NLP Sentiment Calculation
+        journal_text = data.get('journal_text', '')
+        if journal_text:
+            sentiment_dict = sentiment_analyzer.polarity_scores(journal_text)
+            sentiment_score = sentiment_dict['compound']
+        else:
+            sentiment_score = 0.0 # Default if no text provided
+
+        data['Sentiment_Score'] = sentiment_score
+
+        # 2. Handle Blood Pressure string split
         try:
             bp_split = data['Blood Pressure'].split('/')
             data['Systolic BP'] = int(bp_split[0])
@@ -115,18 +134,25 @@ def predict_stress():
             print(f"Error splitting BP: {e}")
             return jsonify({'error': 'Invalid Blood Pressure format. Must be "Systolic/Diastolic" (e.g., "120/80")'}), 400
         
-        # Create DataFrame from the 10 input features
+        # 3. Cast numeric features to float (React sends them as strings)
+        for col in STRESS_NUMERIC_FEATURES:
+            if col in data and col != 'Sentiment_Score':
+                try:
+                    data[col] = float(data[col])
+                except ValueError:
+                    return jsonify({'error': f'Invalid numeric value for {col}'}), 400
+
+        # 4. Create DataFrame and Predict
         input_df = pd.DataFrame([data])
         input_df = input_df[ALL_STRESS_FEATURES]
         
-        # The model's pipeline will do all the scaling/encoding
-        # It will predict "Low Stress", "Moderate Stress", or "High Stress"
         prediction_array = stress_model.predict(input_df)
-        stress_level = prediction_array[0] # Get the string from the array
+        stress_level = prediction_array[0] 
         
         return jsonify({
             'message': 'Stress prediction successful',
-            'stress_level': stress_level
+            'stress_level': stress_level,
+            'sentiment_score': sentiment_score
         }), 200
         
     except Exception as e:
@@ -141,27 +167,45 @@ def chatbot():
     SYSTEM_PROMPT = (
         "You are HealthBot, a friendly and helpful AI assistant..." 
     )
-    data = request.json
-    user_message = data.get('messages', [{}])[-1].get('text', '')
+    data = request.json or {}
+    messages = data.get('messages', [])
+    
+    if not messages: 
+        return jsonify({'answer': 'Hi there! How can I help you today?'})
+        
+    user_message = messages[-1].get('text', '')
     if not user_message: return jsonify({'answer': '...'})
+    
     try:
         apiKey = os.getenv("GEMINI_API_KEY")
         if not apiKey: raise Exception("GEMINI_API_KEY not found")
-        apiUrl = f"https{':'}//generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key={apiKey}"
+        
+        # 1. FIXED MODEL NAME AND REMOVED THE KEY FROM THE URL
+        apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
+        
         payload = {
             "contents": [{"parts": [{"text": user_message}]}],
             "systemInstruction": {"parts": [{"text": SYSTEM_PROMPT}]}
         }
-        headers = {'Content-Type': 'application/json'}
+        
+        # 2. ADDED THE KEY SECURELY TO THE HEADERS INSTEAD
+        headers = {
+            'Content-Type': 'application/json',
+            'x-goog-api-key': apiKey 
+        }
+        
         response = requests.post(apiUrl, json=payload, headers=headers, verify=False)
-        response.raise_for_status() 
+        response.raise_for_status()
         result = response.json()
+        
         text = result.get('candidates', [{}])[0].get('content', {}).get('parts', [{}])[0].get('text', '')
         if not text: raise Exception("No text found in API response")
+        
         return jsonify({'answer': text})
+        
     except Exception as e:
         print(f"❌ Error processing chatbot request: {e}")
-        return jsonify({'answer': 'Sorry, I\'m facing a technical issue.'}), 500
+        return jsonify({'error': 'Sorry, I\'m facing a technical issue.'}), 500
 
 # --- 10. AI NUTRITION PLANNER ROUTE (GenAI + Risk Score) ---
 @app.route('/api/nutrition-planner', methods=['POST'])
@@ -190,12 +234,15 @@ def nutrition_planner():
     try:
         apiKey = os.getenv("GEMINI_API_KEY")
         if not apiKey: raise Exception("GEMINI_API_KEY not found")
-        apiUrl = f"https{':'}//generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key={apiKey}"
+        apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
         payload = {
             "contents": [{"parts": [{"text": USER_PROMPT}]}],
             "systemInstruction": {"parts": [{"text": SYSTEM_PROMPT}]}
         }
-        headers = {'Content-Type': 'application/json'}
+        headers = {
+            'Content-Type': 'application/json',
+            'x-goog-api-key': apiKey 
+        }
         response = requests.post(apiUrl, json=payload, headers=headers, verify=False)
         response.raise_for_status()
         result = response.json()
@@ -235,12 +282,15 @@ def stress_coach():
     try:
         apiKey = os.getenv("GEMINI_API_KEY")
         if not apiKey: raise Exception("GEMINI_API_KEY not found")
-        apiUrl = f"https{':'}//generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key={apiKey}"
+        apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
         payload = {
             "contents": [{"parts": [{"text": USER_PROMPT}]}],
             "systemInstruction": {"parts": [{"text": SYSTEM_PROMPT}]}
         }
-        headers = {'Content-Type': 'application/json'}
+        headers = {
+            'Content-Type': 'application/json',
+            'x-goog-api-key': apiKey 
+        }
         response = requests.post(apiUrl, json=payload, headers=headers, verify=False)
         response.raise_for_status()
         result = response.json()

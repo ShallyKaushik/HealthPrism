@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* frontend/src/index.css */
 
 /* --- 1. THE FIX FOR HORIZONTAL SCROLLING --- */
