@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './StressTestPage.css'; // We'll create this next
-import { FaBrain } from 'react-icons/fa';
+import { FaBrain, FaLeaf } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import TherapyHub from '../components/TherapyHub';
 
 // We'll create a simple result card for this page
 function StressResultCard({ level }) {
@@ -41,11 +42,15 @@ function StressTestPage() {
     'BMI Category': 'Normal',
     'Blood Pressure': '120/80',
     'Heart Rate': '70',
+    'Heart Rate': '70',
     'Daily Steps': '8000',
   });
+  const [journalText, setJournalText] = useState("");
   const [result, setResult] = useState(null);
+  const [sentimentScore, setSentimentScore] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showTherapy, setShowTherapy] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -65,11 +70,17 @@ function StressTestPage() {
     try {
       // Use environment variable for API URL
       const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+      const payload = {
+        ...formData,
+        journal_text: journalText
+      };
       const response = await axios.post(
         `${API_URL}/api/predict-stress`,
-        formData // Send the raw form data
+        payload 
       );
-      setResult(response.data.stress_level);
+        setResult(response.data.stress_level);
+        setSentimentScore(response.data.sentiment_score);
+        setShowTherapy(false); // Reset therapy view on new calculation
     } catch (err) {
       console.error("❌ Prediction error:", err);
       setError(err.response?.data?.error || "An unexpected error occurred.");
@@ -88,6 +99,18 @@ function StressTestPage() {
         </div>
 
         <form className="prediction-form" onSubmit={handleSubmit}>
+          
+          <div className="form-group journal-group" style={{ marginBottom: '20px' }}>
+            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>How was your day? (Briefly describe your feelings):</label>
+            <textarea 
+              style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #ccc', resize: 'vertical' }}
+              rows="3"
+              value={journalText}
+              onChange={(e) => setJournalText(e.target.value)}
+              placeholder="E.g., I felt really overwhelmed with deadlines today..."
+            />
+          </div>
+
           <div className="form-grid">
 
             {/* --- All 10 Features --- */}
@@ -145,17 +168,31 @@ function StressTestPage() {
         {result && (
           <>
             <StressResultCard level={result} />
+            {sentimentScore !== null && (
+              <div style={{ textAlign: 'center', marginTop: '10px', fontSize: '0.9rem', color: '#666' }}>
+                NLP Sentiment Score: <strong>{sentimentScore.toFixed(2)}</strong>
+              </div>
+            )}
             {/* This is the "advanced" part: a button to your AI coach */}
-            <div className="coach-cta">
-              <h3>Not sure what to do next?</h3>
-              <p>Get a personalized plan from our AI Stress Coach.</p>
-              <button
-                className="coach-button"
-                onClick={() => navigate('/stress')}
-              >
-                Go to AI Stress Coach
-              </button>
-            </div>
+            {!showTherapy ? (
+              <div className="coach-cta">
+                <h3>Need immediate relief?</h3>
+                <p>Try our Generative Biofeedback & Cultural Therapy session.</p>
+                <button
+                  className="coach-button flex items-center justify-center gap-2 mx-auto"
+                  onClick={() => setShowTherapy(true)}
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', margin: '0 auto' }}
+                >
+                  <FaLeaf /> Start Therapy Session
+                </button>
+              </div>
+            ) : (
+               <TherapyHub 
+                 initialStressLevel={result} 
+                 sentimentScore={sentimentScore} 
+                 onExit={() => setShowTherapy(false)} 
+               />
+            )}
           </>
         )}
       </div>

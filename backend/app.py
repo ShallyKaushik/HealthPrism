@@ -33,12 +33,12 @@ except Exception as e:
     print(f"❌ Error loading Heart model: {e}")
     heart_model = None
 
-# Model 2: Stress Predictor (NEW)
+# Model 2: Stress Predictor (NEW v2 with NLP)
 try:
-    stress_model = joblib.load('stress_model.joblib')
-    print("✅ NEW Stress Model loaded successfully!")
+    stress_model = joblib.load('stress_model_v2.joblib')
+    print("✅ NEW Stress Model v2 (with NLP) loaded successfully!")
 except Exception as e:
-    print(f"❌ Error loading Stress model: {e}")
+    print(f"❌ Error loading Stress model v2: {e}")
     stress_model = None
 # --- END OF MODEL LOADING ---
 
@@ -56,7 +56,7 @@ ALL_HEART_FEATURES = HEART_NUMERIC_FEATURES + HEART_CATEGORICAL_FEATURES
 STRESS_NUMERIC_FEATURES = [
     'Age', 'Sleep Duration', 'Quality of Sleep', 
     'Physical Activity Level', 'Heart Rate', 'Daily Steps',
-    'Systolic BP', 'Diastolic BP'
+    'Systolic BP', 'Diastolic BP', 'Sentiment_Score'
 ]
 STRESS_CATEGORICAL_FEATURES = [
     'Gender', 'Occupation', 'BMI Category'
@@ -98,7 +98,7 @@ def predict():
         print(f" Error during heart prediction: {e}")
         return jsonify({'error': f'Internal server error: {e}'}), 500
 
-# --- 8. NEW: Stress Prediction Route ---
+# --- 8. NEW: Stress Prediction Route (V2 with NLP) ---
 @app.route('/api/predict-stress', methods=['POST'])
 def predict_stress():
     if stress_model is None:
@@ -108,7 +108,17 @@ def predict_stress():
         if not data:
             return jsonify({'error': 'No JSON data received'}), 400
         
-        # We need to handle the Blood Pressure string split
+        # 1. NLP Sentiment Calculation
+        journal_text = data.get('journal_text', '')
+        if journal_text:
+            sentiment_dict = sentiment_analyzer.polarity_scores(journal_text)
+            sentiment_score = sentiment_dict['compound']
+        else:
+            sentiment_score = 0.0 # Default if no text provided
+
+        data['Sentiment_Score'] = sentiment_score
+
+        # 2. Handle Blood Pressure string split
         try:
             bp_split = data['Blood Pressure'].split('/')
             data['Systolic BP'] = int(bp_split[0])
@@ -117,18 +127,25 @@ def predict_stress():
             print(f"Error splitting BP: {e}")
             return jsonify({'error': 'Invalid Blood Pressure format. Must be "Systolic/Diastolic" (e.g., "120/80")'}), 400
         
-        # Create DataFrame from the 10 input features
+        # 3. Cast numeric features to float (React sends them as strings)
+        for col in STRESS_NUMERIC_FEATURES:
+            if col in data and col != 'Sentiment_Score':
+                try:
+                    data[col] = float(data[col])
+                except ValueError:
+                    return jsonify({'error': f'Invalid numeric value for {col}'}), 400
+
+        # 4. Create DataFrame and Predict
         input_df = pd.DataFrame([data])
         input_df = input_df[ALL_STRESS_FEATURES]
         
-        # The model's pipeline will do all the scaling/encoding
-        # It will predict "Low Stress", "Moderate Stress", or "High Stress"
         prediction_array = stress_model.predict(input_df)
-        stress_level = prediction_array[0] # Get the string from the array
+        stress_level = prediction_array[0] 
         
         return jsonify({
             'message': 'Stress prediction successful',
-            'stress_level': stress_level
+            'stress_level': stress_level,
+            'sentiment_score': sentiment_score
         }), 200
         
     except Exception as e:
