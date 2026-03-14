@@ -42,8 +42,9 @@ except Exception as e:
 
 # Model 2: Stress Predictor (NEW v2 with NLP)
 try:
-    stress_model = joblib.load('stress_model_v2.joblib')
-    print("✅ NEW Stress Model v2 (with NLP) loaded successfully!")
+    stress_model_path = os.path.join(BASE_DIR, 'stress_model_v2.joblib')
+    stress_model = joblib.load(stress_model_path)
+    print(f"✅ NEW Stress Model v2 (with NLP) loaded from {stress_model_path}")
 except Exception as e:
     print(f"❌ Error loading Stress model v2: {e}")
     stress_model = None
