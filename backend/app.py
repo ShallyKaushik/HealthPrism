@@ -19,6 +19,9 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # --- 3. Initialize Application ---
 app = Flask(__name__)
 CORS(app) 
+# Update Flask to serve the React build folder from the project root
+app = Flask(__name__, static_folder='../frontend/build', static_url_path='/')
+CORS(app)
 
 # --- 4. Load ALL OUR ML Models ---
 
@@ -59,6 +62,16 @@ STRESS_CATEGORICAL_FEATURES = [
     'Gender', 'Occupation', 'BMI Category'
 ]
 ALL_STRESS_FEATURES = STRESS_NUMERIC_FEATURES + STRESS_CATEGORICAL_FEATURES
+
+# --- NEW: CATCH-ALL ROUTE TO SERVE REACT APP ---
+# This must be defined before your /api routes
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve(path):
+    if path != "" and os.path.exists(app.static_folder + '/' + path):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, 'index.html')
 
 
 # --- 7. Heart Prediction Route ---
@@ -130,27 +143,45 @@ def chatbot():
     SYSTEM_PROMPT = (
         "You are HealthBot, a friendly and helpful AI assistant..." 
     )
-    data = request.json
-    user_message = data.get('messages', [{}])[-1].get('text', '')
+    data = request.json or {}
+    messages = data.get('messages', [])
+    
+    if not messages: 
+        return jsonify({'answer': 'Hi there! How can I help you today?'})
+        
+    user_message = messages[-1].get('text', '')
     if not user_message: return jsonify({'answer': '...'})
+    
     try:
         apiKey = os.getenv("GEMINI_API_KEY")
         if not apiKey: raise Exception("GEMINI_API_KEY not found")
-        apiUrl = f"https{':'}//generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key={apiKey}"
+        
+        # 1. FIXED MODEL NAME AND REMOVED THE KEY FROM THE URL
+        apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
+        
         payload = {
             "contents": [{"parts": [{"text": user_message}]}],
             "systemInstruction": {"parts": [{"text": SYSTEM_PROMPT}]}
         }
-        headers = {'Content-Type': 'application/json'}
+        
+        # 2. ADDED THE KEY SECURELY TO THE HEADERS INSTEAD
+        headers = {
+            'Content-Type': 'application/json',
+            'x-goog-api-key': apiKey 
+        }
+        
         response = requests.post(apiUrl, json=payload, headers=headers, verify=False)
-        response.raise_for_status() 
+        response.raise_for_status()
         result = response.json()
+        
         text = result.get('candidates', [{}])[0].get('content', {}).get('parts', [{}])[0].get('text', '')
         if not text: raise Exception("No text found in API response")
+        
         return jsonify({'answer': text})
+        
     except Exception as e:
         print(f"❌ Error processing chatbot request: {e}")
-        return jsonify({'answer': 'Sorry, I\'m facing a technical issue.'}), 500
+        return jsonify({'error': 'Sorry, I\'m facing a technical issue.'}), 500
 
 # --- 10. AI NUTRITION PLANNER ROUTE (GenAI + Risk Score) ---
 @app.route('/api/nutrition-planner', methods=['POST'])
@@ -179,12 +210,15 @@ def nutrition_planner():
     try:
         apiKey = os.getenv("GEMINI_API_KEY")
         if not apiKey: raise Exception("GEMINI_API_KEY not found")
-        apiUrl = f"https{':'}//generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key={apiKey}"
+        apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
         payload = {
             "contents": [{"parts": [{"text": USER_PROMPT}]}],
             "systemInstruction": {"parts": [{"text": SYSTEM_PROMPT}]}
         }
-        headers = {'Content-Type': 'application/json'}
+        headers = {
+            'Content-Type': 'application/json',
+            'x-goog-api-key': apiKey 
+        }
         response = requests.post(apiUrl, json=payload, headers=headers, verify=False)
         response.raise_for_status()
         result = response.json()
@@ -224,12 +258,15 @@ def stress_coach():
     try:
         apiKey = os.getenv("GEMINI_API_KEY")
         if not apiKey: raise Exception("GEMINI_API_KEY not found")
-        apiUrl = f"https{':'}//generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key={apiKey}"
+        apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
         payload = {
             "contents": [{"parts": [{"text": USER_PROMPT}]}],
             "systemInstruction": {"parts": [{"text": SYSTEM_PROMPT}]}
         }
-        headers = {'Content-Type': 'application/json'}
+        headers = {
+            'Content-Type': 'application/json',
+            'x-goog-api-key': apiKey 
+        }
         response = requests.post(apiUrl, json=payload, headers=headers, verify=False)
         response.raise_for_status()
         result = response.json()
