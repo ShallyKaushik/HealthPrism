@@ -3,9 +3,9 @@ import './AboutPage.css'; // We will create this CSS file
 import { Link } from 'react-router-dom';
 // import teamImg2 from '../assets/22.jpg';
 // Placeholder images for the team. You can replace these.
-const teamImg1 = 'https://media.licdn.com/dms/image/v2/D4D03AQEs6MYhJgT46g/profile-displayphoto-scale_400_400/B4DZrGB_uRGgAg-/0/1764259004965?e=1775088000&v=beta&t=EcHJnmpo7lM1i7p8YW9P9d2JPNbARfwrVVXLfP2TQEQ';
-const teamImg2 = 'https://media.licdn.com/dms/image/v2/D5603AQHnat6pB9zsow/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1718306574291?e=1775088000&v=beta&t=F13I6qh5rMAOWtJq3ancpU3rEFppCfj32I-0I3h61n4';
-const teamImg3 = 'https://media.licdn.com/dms/image/v2/D5603AQHeZfEHpJWjhQ/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1732206982236?e=1775088000&v=beta&t=3cnhb8Yy52Apj4zdrFL3j7KeQKZ7B4pm2aq2__3UuDk';
+const teamImg2 = 'https://media.licdn.com/dms/image/v2/D4D03AQEs6MYhJgT46g/profile-displayphoto-scale_400_400/B4DZrGB_uRGgAg-/0/1764259004965?e=1775088000&v=beta&t=EcHJnmpo7lM1i7p8YW9P9d2JPNbARfwrVVXLfP2TQEQ';
+const teamImg3 = 'https://media.licdn.com/dms/image/v2/D5603AQHnat6pB9zsow/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1718306574291?e=1775088000&v=beta&t=F13I6qh5rMAOWtJq3ancpU3rEFppCfj32I-0I3h61n4';
+const teamImg1 = 'https://media.licdn.com/dms/image/v2/D5603AQHeZfEHpJWjhQ/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1732206982236?e=1775088000&v=beta&t=3cnhb8Yy52Apj4zdrFL3j7KeQKZ7B4pm2aq2__3UuDk';
 function AboutPage() {
 
 
