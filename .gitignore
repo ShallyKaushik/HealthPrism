@@ -1,5 +1,7 @@
 # Python / Flask
 venv/
+hola/
+backend/hola/
 *.pyc
 __pycache__/
 database.db
