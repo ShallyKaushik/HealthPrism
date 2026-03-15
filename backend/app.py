@@ -20,6 +20,9 @@ from bson.objectid import ObjectId
 
 # --- 2. SETUP ---
 load_dotenv()
+import sklearn
+print(f"DEBUG: Sklearn Version: {sklearn.__version__}")
+print(f"DEBUG: CWD: {os.getcwd()}")
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 app = Flask(__name__, static_folder='../frontend/build', static_url_path='/')
@@ -27,14 +30,22 @@ CORS(app)
 
 # --- 3.1 MongoDB Setup ---
 mongo_uri = os.getenv("MONGO_URI")
-client = MongoClient(mongo_uri)
-db = client['HealthPrism']
-users_collection = db.users
-heart_predictions_collection = db.heart_predictions
-stress_predictions_collection = db.stress_predictions
-
-print(f"DEBUG: Connected to MongoDB. Database: {db.name}")
-print(f"DEBUG: Collections: {db.list_collection_names()}")
+try:
+    client = MongoClient(mongo_uri, serverSelectionTimeoutMS=5000)
+    db = client['HealthPrism']
+    # Trigger connection to verify
+    db.command('ismaster')
+    users_collection = db.users
+    heart_predictions_collection = db.heart_predictions
+    stress_predictions_collection = db.stress_predictions
+    print(f"✅ Connected to MongoDB. Database: {db.name}")
+    print(f"DEBUG: Collections: {db.list_collection_names()}")
+except Exception as e:
+    print(f"⚠️ Warning: Could not connect to MongoDB. Database features will be disabled. Error: {e}")
+    db = None
+    users_collection = None
+    heart_predictions_collection = None
+    stress_predictions_collection = None
 
 # --- 3.2 JWT & Auth Helpers ---
 SECRET_KEY = os.getenv("SECRET_KEY", "your_secret_key")
@@ -54,6 +65,8 @@ def token_required(f):
         
         try:
             data = jwt.decode(token, JWT_SECRET_KEY, algorithms=["HS256"])
+            if users_collection is None:
+                return jsonify({'error': 'Database is unavailable!'}), 503
             current_user = users_collection.find_one({'_id': ObjectId(data['user_id'])})
             if not current_user:
                 return jsonify({'error': 'User not found!'}), 401
@@ -218,6 +231,9 @@ def register():
         if len(password) < 8:
             return jsonify({'error': 'Password must be at least 8 characters long'}), 400
 
+        if users_collection is None:
+            return jsonify({'error': 'Database is unavailable!'}), 503
+
         if users_collection.find_one({'email': email}):
             return jsonify({'error': 'User with this email already exists'}), 400
             
@@ -245,6 +261,9 @@ def login():
         email = data.get('email')
         password = data.get('password')
         
+        if users_collection is None:
+            return jsonify({'error': 'Database is unavailable!'}), 503
+
         user = users_collection.find_one({'email': email})
         if not user or not bcrypt.checkpw(password.encode('utf-8'), user['password']):
             return jsonify({'error': 'Invalid email or password'}), 401
@@ -269,6 +288,8 @@ def login():
 @app.route('/api/debug/db', methods=['GET'])
 def debug_db():
     try:
+        if db is None:
+            return jsonify({'error': 'Database is unavailable!'}), 503
         stats = {
             'db_name': db.name,
             'collections': db.list_collection_names(),
@@ -299,6 +320,8 @@ def get_all_users(current_user):
 def save_heart_prediction(current_user):
     print(f"DEBUG: save_heart_prediction called by {current_user['email']}")
     try:
+        if heart_predictions_collection is None:
+            return jsonify({'error': 'Database is unavailable!'}), 503
         data = request.json
         print(f"DEBUG: Received data: {data}")
         prediction_entry = {
@@ -318,6 +341,8 @@ def save_heart_prediction(current_user):
 @token_required
 def get_heart_history(current_user):
     try:
+        if heart_predictions_collection is None:
+            return jsonify({'history': []}), 200 # Return empty history if DB is down
         history = list(heart_predictions_collection.find({'user_id': str(current_user['_id'])}).sort('timestamp', -1))
         for item in history:
             item['_id'] = str(item['_id'])
@@ -330,6 +355,8 @@ def get_heart_history(current_user):
 def save_stress_prediction(current_user):
     print(f"DEBUG: save_stress_prediction called by {current_user['email']}")
     try:
+        if stress_predictions_collection is None:
+            return jsonify({'error': 'Database is unavailable!'}), 503
         data = request.json
         print(f"DEBUG: Received data: {data}")
         prediction_entry = {
@@ -349,6 +376,8 @@ def save_stress_prediction(current_user):
 @token_required
 def get_stress_history(current_user):
     try:
+        if stress_predictions_collection is None:
+            return jsonify({'history': []}), 200 # Return empty history if DB is down
         history = list(stress_predictions_collection.find({'user_id': str(current_user['_id'])}).sort('timestamp', -1))
         for item in history:
             item['_id'] = str(item['_id'])
@@ -376,7 +405,6 @@ def chatbot():
         apiKey = os.getenv("GEMINI_API_KEY")
         if not apiKey: raise Exception("GEMINI_API_KEY not found")
         
-        # 1. FIXED MODEL NAME AND REMOVED THE KEY FROM THE URL
         apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
         
         payload = {
@@ -384,7 +412,6 @@ def chatbot():
             "systemInstruction": {"parts": [{"text": SYSTEM_PROMPT}]}
         }
         
-        # 2. ADDED THE KEY SECURELY TO THE HEADERS INSTEAD
         headers = {
             'Content-Type': 'application/json',
             'x-goog-api-key': apiKey 

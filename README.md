@@ -1,135 +1,85 @@
-# 🩺 HealthPrism: AI-Powered Holistic Health Assistant
+# HealthPrism 🩺💎
 
-HealthPrism is a unified "v3.0" digital health platform that bridges the gap between physical diagnostics and daily wellness. Unlike fragmented health apps, HealthPrism combines **Predictive Machine Learning** (for risk assessment) with **Generative AI** (for personalized coaching) to create a connected, "glass-box" health ecosystem.
+**HealthPrism** is a state-of-the-art health diagnostic and wellness intelligence platform. It combines predictive machine learning models with advanced generative AI coaching to provide a 360-degree view of your wellbeing.
+
+---
 
 ## 🚀 Key Features
 
-### 🧠 Predictive AI (Machine Learning)
-* **Heart Risk Predictor:** An optimized **Random Forest Classifier** trained on clinical data (UCI Heart Disease Dataset). It uses the top 8 impactful features to predict heart disease risk with **98.5% accuracy**.
-* **Explainable AI (XAI):** Includes a "Risk Factors" engine that explains *why* a user is at risk (e.g., "High Cholesterol > 200 mg/dl").
-* **Stress Level Predictor:** A secondary ML model analyzing 11 biometric & lifestyle markers (Sleep, BP, Steps) to classify stress levels.
-
-### 🤖 Generative AI (Google Gemini API)
-* **AI Nutrition Planner:** Generates 3-day meal plans tailored to your specific **Heart Risk Score** (e.g., recommending low-sodium diets for high-risk users).
-* **AI Stress Coach:** A hybrid agent that combines **NLP Sentiment Analysis (VADER)** with your Heart Risk Score to provide empathetic, context-aware stress relief plans.
-* **AI HealthBot:** A 24/7 assistant for general health Q&A.
-
-### 🛡️ Architecture & Privacy
-* **Privacy-First:** No central database. All prediction history is stored locally on the user's device using `localStorage`.
-* **Smart Dashboard:** Visualizes health trends over time using interactive charts.
-* **Decoupled Stack:** React Frontend + Flask Backend.
+- **❤️ Heart Risk Assessment**: High-accuracy prediction using an optimized 8-feature ML pipeline.
+- **🧠 Advanced Stress Coaching**: NLP-enhanced stress detection using physiological data and journal sentiment analysis.
+- **💬 AI HealthBot**: A personal wellness assistant powered by Google Gemini.
+- **🥗 Personalized Nutrition**: Meal plans generated dynamically based on your real-time heart health metrics.
+- **📊 Health Timeline**: Track your diagnostic results over time with interactive charts.
+- **🔐 Secure Auth**: Robust user authentication system powered by JWT and MongoDB.
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Technology Stack
 
-### Frontend
-* **React.js:** Core UI framework.
-* **Recharts:** For data visualization (prediction history graph).
-* **React Router:** For seamless single-page navigation.
-* **Context API:** For global state management ("Global Brain").
-
-### Backend
-* **Python / Flask:** REST API server.
-* **Scikit-Learn:** Machine Learning model training and inference.
-* **Pandas:** Data manipulation.
-* **VADER Sentiment:** NLP for the Stress Coach.
-
-### AI Services
-* **Google Gemini API (1.5 Flash):** For all generative text tasks.
+| Layer | Component |
+| :--- | :--- |
+| **Frontend** | React 19, Tailwind CSS, Framer Motion, Recharts |
+| **Backend** | Flask (Python), JWT, Bcrypt |
+| **Machine Learning** | Scikit-Learn, Joblib, VADER Sentiment |
+| **Artificial Intelligence** | Google Gemini 1.5 Flash |
+| **Database** | MongoDB (Local/Cloud Support) |
 
 ---
 
-## ⚙️ Installation & Setup
+## 📂 Project Structure
 
-Follow these steps to run the project locally.
+- `frontend/`: The React application UI and components.
+- `backend/`: Flask API, ML models (`.joblib`), and AI integration logic.
+- `heart_data.csv` & `stress_data.csv`: Source datasets for model training.
+- `train_*.py`: Model training and retraining pipelines for environment synchronization.
 
-### Prerequisites
-* Node.js & npm installed
-* Python 3.8+ installed
+---
 
-### 1. Clone the Repository
+## 🛠️ Setup & Execution
+
+### 1. Prerequisites
+- Python 3.9+
+- Node.js & npm
+- MongoDB (running locally or a cloud URI)
+
+### 2. Backend Setup
 ```bash
-git clone https://github.com/ShallyKaushik/HealthPrism
-cd HealthPrism
-
-### 2. Backend Setup (Flask)
-Navigate to the backend folder and set up the Python environment.
-
-Bash
-
 cd backend
-
-# Create a virtual environment
-python -m venv venv
-
-# Activate the virtual environment
-# Windows:
-venv\Scripts\activate
-# Mac/Linux:
-source venv/bin/activate
-
-# Install dependencies
+python -m venv hola
+.\hola\Scripts\activate  # Windows
+# source hola/bin/activate  # Linux/Mac
 pip install -r requirements.txt
-
-# Create a .env file for your API Key
-# Add this line to the file: GEMINI_API_KEY=your_api_key_here
-Training the Models (First Time Only):
-
-Bash
-
-# Train the Heart & Stress models to generate the .joblib files
-python train_optimized_model.py
-python train_stress_model.py
-Start the Server:
-
-Bash
-
 python app.py
-The backend will run on http://127.0.0.1:5000
+```
 
-### 3. Frontend Setup (React)
-Open a new terminal and navigate to the frontend folder.
-
-Bash
-
+### 3. Frontend Setup
+```bash
 cd frontend
-
-# Install Node modules
 npm install
-
-# Start the React App
 npm start
-The frontend will launch on http://localhost:3000
+```
 
-📂 Project Structure
-HealthPrism/
-├── backend/
-│   ├── app.py                 # Main Flask API Application
-│   ├── heart_risk_pipeline.joblib  # Trained Heart ML Model
-│   ├── stress_model.joblib         # Trained Stress ML Model
-│   ├── train_models.py        # Scripts to train ML models
-│   └── requirements.txt       # Python dependencies
-│
-└── frontend/
-    ├── src/
-    │   ├── components/        # Reusable UI (Navbar, ResultCard, etc.)
-    │   ├── context/           # PredictionContext (Global State)
-    │   ├── pages/             # Main Pages (Dashboard, Predictor, etc.)
-    │   └── App.js             # Main React Component
-    └── public/
-🔮 Future Scope
-Wearable Integration: Connecting real-time data from smartwatches.
+### 4. Configuration
+Create a `backend/.env` file with:
+```env
+GEMINI_API_KEY="your_api_key_here"
+MONGO_URI="mongodb://localhost:27017/"
+SECRET_KEY="your_secret_key"
+JWT_SECRET_KEY="your_jwt_secret"
+```
 
-User Accounts: Implementing JWT authentication for cross-device syncing.
+---
 
-Expanded Models: Adding Diabetes and Hypertension prediction models.
+## 🧠 How It Works
 
-👥 Contributors
-Souryapriya Choudhury
+1. **Diagnostics**: When you submit your health metrics, the backend pipes them into pre-trained **Random Forest** and **Decision Tree** models.
+2. **Sentiment Analysis**: For stress tests, the system uses **VADER** to score the emotional tone of your journal entries, which acts as a pivot feature for the stress model.
+3. **Generative Coaching**: The **Gemini AI** receives your diagnostic "Risk Score" and provides context-aware advice (e.g., suggesting low-sodium meals if heart risk is high).
 
-Shelly Kaushik
+---
 
-Aryan Gupta
+## ⚖️ License
+Personal/Educational Use.
 
-Made with ❤️ and Python.
+*Disclaimer: HealthPrism is a diagnostic assistant and not a replacement for professional medical advice.*
