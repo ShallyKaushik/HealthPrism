@@ -1,53 +1,97 @@
-// frontend/src/context/PredictionContext.js
-
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import axios from 'axios';
+import { useAuth } from './AuthContext';
 
 const PredictionContext = createContext();
 
 export function PredictionProvider({ children }) {
-  // --- THIS IS THE UPGRADE ---
-  // The state is no longer a single object, but an ARRAY.
-  // We initialize it by reading the saved *list* from localStorage.
-  const [predictionHistory, setPredictionHistory] = useState(() => {
-    try {
-      const savedHistory = localStorage.getItem('predictionHistory');
-      return savedHistory ? JSON.parse(savedHistory) : []; // Default to an empty array
-    } catch (error) {
-      console.error("Failed to parse history from localStorage", error);
-      return [];
-    }
-  });
-  // --- END OF UPGRADE ---
+  const { token, user } = useAuth();
+  const [predictionHistory, setPredictionHistory] = useState([]);
+  const [stressHistory, setStressHistory] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const API_URL = 'http://127.0.0.1:5000/api';
+  console.log("DEBUG: PredictionContext initialized with API_URL:", API_URL);
 
-  // We also still want to provide the *latest* prediction for convenience
+  // Fetch history when token changes (user logs in/out)
+  useEffect(() => {
+    const fetchHistory = async () => {
+      if (!token) {
+        setPredictionHistory([]);
+        setStressHistory([]);
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const [heartRes, stressRes] = await Promise.all([
+          axios.get(`${API_URL}/predictions/heart`),
+          axios.get(`${API_URL}/predictions/stress`)
+        ]);
+        setPredictionHistory(heartRes.data.history || []);
+        setStressHistory(stressRes.data.history || []);
+      } catch (error) {
+        console.error("Failed to fetch prediction history", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHistory();
+  }, [token, API_URL]);
+
   const latestPrediction = predictionHistory.length > 0 ? predictionHistory[0].probability : null;
+  const latestStress = stressHistory.length > 0 ? stressHistory[0].stress_level : null;
 
-  // This function now ADDS a prediction to the list
-  const addPrediction = (predictionData) => {
+  const addPrediction = async (predictionData) => {
+    if (!token) {
+      console.log("DEBUG: addPrediction failed - no token");
+      return;
+    }
+    console.log("DEBUG: addPrediction called with:", predictionData);
     try {
-      // Create a new prediction object with a timestamp
-      const newPrediction = {
+      const resp = await axios.post(`${API_URL}/predictions/heart`, {
         probability: predictionData.probability_high_risk,
-        inputs: predictionData.inputs, // We'll save the inputs too!
-        timestamp: new Date().toISOString(),
-      };
-
-      // Add the new prediction to the *beginning* of the list
-      const newHistory = [newPrediction, ...predictionHistory];
+        inputs: predictionData.inputs
+      });
+      console.log("DEBUG: addPrediction response:", resp.data);
       
-      // Save the new, longer list back to localStorage
-      localStorage.setItem('predictionHistory', JSON.stringify(newHistory));
-      setPredictionHistory(newHistory); // Update the global state
-
+      // Refresh history
+      const res = await axios.get(`${API_URL}/predictions/heart`);
+      setPredictionHistory(res.data.history || []);
     } catch (error) {
-      console.error("Failed to save prediction to localStorage", error);
+      console.error("DEBUG: Failed to save heart prediction", error);
+    }
+  };
+
+  const addStressPrediction = async (stressData) => {
+    if (!token) {
+      console.log("DEBUG: addStressPrediction failed - no token");
+      return;
+    }
+    console.log("DEBUG: addStressPrediction called with:", stressData);
+    try {
+      const resp = await axios.post(`${API_URL}/predictions/stress`, {
+        stress_level: stressData.stress_level,
+        inputs: stressData.inputs
+      });
+      console.log("DEBUG: addStressPrediction response:", resp.data);
+      
+      // Refresh history
+      const res = await axios.get(`${API_URL}/predictions/stress`);
+      setStressHistory(res.data.history || []);
+    } catch (error) {
+      console.error("DEBUG: Failed to save stress prediction", error);
     }
   };
 
   const value = {
-    predictionHistory,  // The full list
-    latestPrediction,   // The most recent score
-    addPrediction,      // The new function to add a score
+    predictionHistory,
+    stressHistory,
+    latestPrediction,
+    latestStress,
+    addPrediction,
+    addStressPrediction,
+    loading
   };
 
   return (

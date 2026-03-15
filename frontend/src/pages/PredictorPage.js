@@ -76,17 +76,19 @@ function PredictorPage() {
     
     try {
       // Call the single, optimized /api/predict route
-      // Use environment variable for API URL
-      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+      const API_URL = 'http://127.0.0.1:5000/api';
+      console.log("DEBUG: PredictorPage calling:", `${API_URL}/predict`);
+
       const response = await axios.post(
-        `${API_URL}/api/predict`,
+        `${API_URL}/predict`,
         payload
       );
       
       const riskScore = response.data.probability_high_risk;
       
       // Save to global "brain" (which saves to history)
-      addPrediction({
+      console.log("DEBUG: PredictorPage calling addPrediction with score:", riskScore);
+      await addPrediction({
         probability_high_risk: riskScore,
         inputs: payload 
       });

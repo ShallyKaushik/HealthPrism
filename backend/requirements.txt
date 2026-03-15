@@ -9,3 +9,6 @@ vaderSentiment
 urllib3
 gunicorn
 numpy
+pymongo
+pyjwt
+bcrypt

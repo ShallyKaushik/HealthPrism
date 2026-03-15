@@ -7,8 +7,9 @@ const AuthContext = createContext();
 
 // Create the provider component
 export function AuthProvider({ children }) {
-  // Store the token in state, initializing from localStorage
+  // Store the token and user in state, initializing from localStorage
   const [token, setToken] = useState(localStorage.getItem('token'));
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false); // For loading states
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ export function AuthProvider({ children }) {
   // This effect ensures that the axios default header is set
   // whenever the token changes.
   useEffect(() => {
+    console.log("DEBUG: Auth token changed:", token ? "Token present" : "Token null");
     if (token) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       localStorage.setItem('token', token);
@@ -28,13 +30,23 @@ export function AuthProvider({ children }) {
     }
   }, [token]);
 
+  // Keep user in sync with localStorage
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem('user', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('user');
+    }
+  }, [user]);
+
   // --- Register Function ---
-  const register = async (username, password) => {
+  const register = async (fullname, email, password) => {
     setError(null);
     setLoading(true);
     try {
       await axios.post(`${API_URL}/register`, {
-        username,
+        fullname,
+        email,
         password,
       });
       // Automatically navigate to login page after successful registration
@@ -50,17 +62,21 @@ export function AuthProvider({ children }) {
   };
 
   // --- Login Function ---
-  const login = async (username, password) => {
+  const login = async (email, password) => {
     setError(null);
     setLoading(true);
     try {
       const response = await axios.post(`${API_URL}/login`, {
-        username,
+        email,
         password,
       });
       
       const newToken = response.data.access_token;
-      setToken(newToken); // Update state, which triggers the useEffect
+      const userData = response.data.user;
+      
+      console.log("DEBUG: Login successful for:", userData.email);
+      setToken(newToken);
+      setUser(userData);
       
       // Navigate to the dashboard (homepage)
       navigate('/');
@@ -68,7 +84,7 @@ export function AuthProvider({ children }) {
       return true; // Indicate success
 
     } catch (err) {
-      const errorMsg = err.response?.data?.error || 'Invalid username or password';
+      const errorMsg = err.response?.data?.error || 'Invalid email or password';
       setError(errorMsg);
       setLoading(false);
       return false; // Indicate failure
@@ -77,13 +93,15 @@ export function AuthProvider({ children }) {
 
   // --- Logout Function ---
   const logout = () => {
-    setToken(null); // Update state, which triggers the useEffect
+    setToken(null);
+    setUser(null);
     navigate('/login'); // Redirect to login on logout
   };
 
   // The value to be passed to consuming components
   const value = {
     token,
+    user,
     error,
     loading,
     login,

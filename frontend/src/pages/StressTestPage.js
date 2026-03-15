@@ -4,6 +4,7 @@ import './StressTestPage.css'; // We'll create this next
 import { FaBrain, FaLeaf } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import TherapyHub from '../components/TherapyHub';
+import { usePrediction } from '../context/PredictionContext';
 
 // We'll create a simple result card for this page
 function StressResultCard({ level }) {
@@ -53,6 +54,8 @@ function StressTestPage() {
   const [showTherapy, setShowTherapy] = useState(false);
   const navigate = useNavigate();
 
+  const { addStressPrediction } = usePrediction();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -74,13 +77,25 @@ function StressTestPage() {
         ...formData,
         journal_text: journalText
       };
+      
+      console.log("DEBUG: StressTestPage calling:", `${API_URL}/api/predict-stress`);
+      
       const response = await axios.post(
         `${API_URL}/api/predict-stress`,
         payload 
       );
-        setResult(response.data.stress_level);
-        setSentimentScore(response.data.sentiment_score);
-        setShowTherapy(false); // Reset therapy view on new calculation
+      
+      const stressLevel = response.data.stress_level;
+      setResult(stressLevel);
+      setSentimentScore(response.data.sentiment_score);
+      setShowTherapy(false); // Reset therapy view on new calculation
+      
+      // Save to backend
+      console.log("DEBUG: StressTestPage calling addStressPrediction with level:", stressLevel);
+      await addStressPrediction({
+        stress_level: stressLevel,
+        inputs: formData
+      });
     } catch (err) {
       console.error("❌ Prediction error:", err);
       setError(err.response?.data?.error || "An unexpected error occurred.");
