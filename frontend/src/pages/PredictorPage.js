@@ -10,6 +10,7 @@ import './PredictorPage.css';
 import ResultCard from '../components/ResultCard';
 import { usePrediction } from '../context/PredictionContext';
 import RiskFactors from '../components/RiskFactors'; // Your "Explainability" component
+import RPPGHeartRate from '../components/RPPGHeartRate'; // Added for rPPG
 
 function PredictorPage() {
   
@@ -36,6 +37,7 @@ function PredictorPage() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showRppgModal, setShowRppgModal] = useState(false); // Added for rPPG
 
   const { addPrediction } = usePrediction(); // Use addPrediction for history
 
@@ -127,7 +129,12 @@ function PredictorPage() {
               <input type="number" name="chol" value={formData.chol} onChange={handleChange} required min="100" max="600"/>
             </label>
             <label>Max Heart Rate (thalach)
-              <input type="number" name="thalach" value={formData.thalach} onChange={handleChange} required min="60" max="220"/>
+              <div className="input-with-action">
+                <input type="number" name="thalach" value={formData.thalach} onChange={handleChange} required min="60" max="220"/>
+                <button type="button" className="action-btn" onClick={() => setShowRppgModal(true)}>
+                  📷 Measure
+                </button>
+              </div>
             </label>
             <label>Oldpeak
               <input type="number" step="0.1" name="oldpeak" value={formData.oldpeak} onChange={handleChange} required min="0" max="10"/>
@@ -170,6 +177,15 @@ function PredictorPage() {
 
       {/* --- This is the result area --- */}
       <div className="results-container">
+        {showRppgModal && (
+          <RPPGHeartRate 
+            onApply={(val) => {
+              setFormData(prev => ({ ...prev, thalach: String(val) }));
+              setShowRppgModal(false);
+            }}
+            onClose={() => setShowRppgModal(false)}
+          />
+        )}
         {error && <div className="error-message">{error}</div>}
         
         {/* This is your existing ResultCard */}

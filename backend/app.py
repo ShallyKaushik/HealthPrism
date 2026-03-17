@@ -7,6 +7,7 @@ from flask_cors import CORS
 import requests
 import os
 from dotenv import load_dotenv
+import numpy as np
 
 # --- 1. IMPORTS FOR ADVANCED FEATURES ---
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
@@ -213,6 +214,97 @@ def predict_stress():
         print(f"❌ Error during stress prediction: {e}")
         return jsonify({'error': f'Internal server error: {e}'}), 500
 # --- END OF NEW STRESS ROUTE ---
+
+# --- 8.0 NEW: rPPG Heart Rate Calculation Route ---
+@app.route('/api/rppg', methods=['POST'])
+def calculate_rppg():
+    try:
+        data = request.json
+        if not data:
+            return jsonify({'error': 'No JSON data received'}), 400
+            
+        r_vals = data.get('r', [])
+        g_vals = data.get('g', [])
+        b_vals = data.get('b', [])
+        values = data.get('values', []) # Fallback for old single-channel
+        
+        fps = data.get('fps', 30.0)
+        
+        # 1. Calculate combined Signal using selection
+        if r_vals and g_vals and b_vals and len(g_vals) >= 30:
+            # --- ADVANCED POS (Plane-Orthogonal-to-Skin) ALGORITHM ---
+            R = np.array(r_vals, dtype=float)
+            G = np.array(g_vals, dtype=float)
+            B = np.array(b_vals, dtype=float)
+            
+            # Normalize with mean (avoid zero division)
+            Rn = R / (np.mean(R) + 1e-6)
+            Gn = G / (np.mean(G) + 1e-6)
+            Bn = B / (np.mean(B) + 1e-6)
+            
+            # Create Projection vectors
+            S1 = Rn - Gn
+            S2 = Rn + Gn - 2 * Bn
+            
+            # Combine based on standard deviation ratios (motion cancel)
+            std1 = np.std(S1)
+            std2 = np.std(S2)
+            alpha = std1 / (std2 + 1e-6)
+            
+            y = S1 + alpha * S2
+        elif values and len(values) >= 30:
+            # Fallback to single channel Green (backward compatibility)
+            y = np.array(values, dtype=float)
+        else:
+            return jsonify({'error': 'Insufficient data points (need at least 30)'}), 400
+            
+        from scipy.signal import butter, filtfilt, welch
+            
+        # 2. Detrend (remove slow drift)
+        y = y - np.mean(y)
+        
+        # 3. Butterworth Bandpass Filter (0.75 Hz to 3.5 Hz)
+        try:
+            nyquist = fps / 2.0
+            low = 0.75 / nyquist
+            high = 3.5 / nyquist
+            b, a = butter(2, [low, high], btype='bandpass')
+            y_filtered = filtfilt(b, a, y)
+        except Exception as e:
+            print(f"⚠️ Filter error: {e}, falling back to standard signal")
+            y_filtered = y
+            
+        # 4. Welch's Method for Power Spectral Density (PSD) estimation
+        try:
+            n_seg = min(len(y_filtered), 128) # Segment size for averaging
+            f, pxx = welch(y_filtered, fs=fps, nperseg=n_seg, nfft=1024)
+        except Exception as e:
+            print(f"⚠️ Welch error: {e}, falling back to FFT")
+            # Fallback to FFT on filtered signal
+            n = len(y_filtered)
+            f = np.fft.fftfreq(n, 1/fps)
+            pxx = np.abs(np.fft.fft(y_filtered))
+             
+        # Find peak only in allowable heart rate band (45 - 210 BPM)
+        mask = (f >= 0.75) & (f <= 3.5)
+        f_valid = f[mask]
+        pxx_valid = pxx[mask]
+        
+        if len(pxx_valid) == 0:
+             return jsonify({'bpm': 0, 'message': 'No periodic heart rate signal found'}), 200
+             
+        peak_idx = np.argmax(pxx_valid)
+        bpm = f_valid[peak_idx] * 60
+        
+        return jsonify({
+            'message': 'Advanced rPPG (POS + Butterworth + Welch) calculation successful',
+            'bpm': round(float(bpm), 1)
+        }), 200
+        
+    except Exception as e:
+        print(f"❌ Error during advanced rPPG calculation: {e}")
+        return jsonify({'error': f'Internal server error: {e}'}), 500
+# --- END OF rPPG ROUTE ---
 
 
 # --- 8.1 AUTH ROUTES ---

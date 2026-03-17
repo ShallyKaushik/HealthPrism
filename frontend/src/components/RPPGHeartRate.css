@@ -1,0 +1,238 @@
+/* RPPGHeartRate.css */
+
+.rppg-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.rppg-content-card {
+  background: #1e293b; /* slate-800 */
+  color: #f8fafc;
+  padding: 24px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.rppg-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 12px;
+}
+
+.rppg-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #22c55e; /* green-500 */
+}
+
+.rppg-close-btn {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0 4px;
+  transition: color 0.2s;
+}
+
+.rppg-close-btn:hover {
+  color: #f8fafc;
+}
+
+.rppg-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.rppg-error-alert {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  width: 100%;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.rppg-preview-panel {
+  width: 320px;
+  height: 240px;
+  background: #0f172a; /* slate-900 */
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.rppg-canvas-feed {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.rppg-recording-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+}
+
+.countdown-number {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #22c55e;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+.countdown-hint {
+  font-size: 0.85rem;
+  color: #e2e8f0;
+  margin-top: 4px;
+  letter-spacing: 1px;
+}
+
+.rppg-instructions {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  text-align: center;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.rppg-actions {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.rppg-start-btn, .rppg-recording-btn, .rppg-loading-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.rppg-start-btn {
+  background: #22c55e;
+  color: #ffffff;
+}
+
+.rppg-start-btn:hover:not(:disabled) {
+  background: #16a34a;
+}
+
+.rppg-start-btn:disabled {
+  background: #334155;
+  color: #64748b;
+  cursor: not-allowed;
+}
+
+.rppg-recording-btn {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  animation: pulse 1.5s infinite;
+}
+
+.rppg-loading-btn {
+  background: #334155;
+  color: #94a3b8;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.8; }
+  50% { opacity: 1; }
+  100% { opacity: 0.8; }
+}
+
+.rppg-results {
+  text-align: center;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.rppg-results p {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  margin: 0 0 4px 0;
+}
+
+.rppg-bpm-display {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #22c55e;
+}
+
+.rppg-bpm-display span {
+  font-size: 1rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.results-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.rppg-apply-btn {
+  flex: 2;
+  background: #22c55e;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.rppg-apply-btn:hover {
+  background: #16a34a;
+}
+
+.rppg-retry-btn {
+  flex: 1;
+  background: #334155;
+  color: #e2e8f0;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.rppg-retry-btn:hover {
+  background: #475569;
+}

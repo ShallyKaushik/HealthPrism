@@ -227,3 +227,40 @@
   background-color: #8628d9;
   transform: translateY(-2px);
 }
+
+/* --- rPPG Action Button --- */
+.input-with-action {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.input-with-action input {
+  margin-top: 0 !important;
+  flex: 1;
+}
+
+.action-btn {
+  background: #F9FAFB;
+  color: #16a34a;
+  border: 1px solid #D1D5DB;
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  height: 48px;
+  box-sizing: border-box;
+  transition: all 0.2s;
+}
+
+.action-btn:hover {
+  background: #16a34a;
+  color: white;
+  border-color: #16a34a;
+}

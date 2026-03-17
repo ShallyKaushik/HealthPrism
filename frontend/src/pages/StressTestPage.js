@@ -5,6 +5,7 @@ import { FaBrain, FaLeaf } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import TherapyHub from '../components/TherapyHub';
 import { usePrediction } from '../context/PredictionContext';
+import RPPGHeartRate from '../components/RPPGHeartRate'; // Added for rPPG
 
 // We'll create a simple result card for this page
 function StressResultCard({ level }) {
@@ -52,6 +53,7 @@ function StressTestPage() {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showTherapy, setShowTherapy] = useState(false);
+  const [showRppgModal, setShowRppgModal] = useState(false); // Added for rPPG
   const navigate = useNavigate();
 
   const { addStressPrediction } = usePrediction();
@@ -162,7 +164,12 @@ function StressTestPage() {
               <input type="text" name="Blood Pressure" value={formData['Blood Pressure']} onChange={handleChange} required />
             </label>
             <label>Heart Rate (bpm)
-              <input type="number" name="Heart Rate" value={formData['Heart Rate']} onChange={handleChange} required />
+              <div className="input-with-action">
+                <input type="number" name="Heart Rate" value={formData['Heart Rate']} onChange={handleChange} required />
+                <button type="button" className="action-btn" onClick={() => setShowRppgModal(true)}>
+                  📷 Measure
+                </button>
+              </div>
             </label>
             <label>Daily Steps
               <input type="number" name="Daily Steps" value={formData['Daily Steps']} onChange={handleChange} required />
@@ -178,6 +185,15 @@ function StressTestPage() {
 
       {/* --- Result Area --- */}
       <div className="results-container">
+        {showRppgModal && (
+          <RPPGHeartRate 
+            onApply={(val) => {
+              setFormData(prev => ({ ...prev, 'Heart Rate': String(val) }));
+              setShowRppgModal(false);
+            }}
+            onClose={() => setShowRppgModal(false)}
+          />
+        )}
         {error && <div className="error-message">{error}</div>}
 
         {result && (
