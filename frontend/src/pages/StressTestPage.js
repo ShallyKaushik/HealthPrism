@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './StressTestPage.css'; // We'll create this next
-import { FaBrain, FaLeaf } from 'react-icons/fa';
+import { FaBrain, FaLeaf, FaCamera } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import TherapyHub from '../components/TherapyHub';
 import { usePrediction } from '../context/PredictionContext';
@@ -31,7 +31,7 @@ function StressResultCard({ level }) {
 function StressTestPage() {
 
   useEffect(() => {
-    document.title = 'StressTest :)';
+    document.title = 'Stress Test | HealthPrism';
   }, []);
 
   const [formData, setFormData] = useState({
@@ -167,7 +167,7 @@ function StressTestPage() {
               <div className="input-with-action">
                 <input type="number" name="Heart Rate" value={formData['Heart Rate']} onChange={handleChange} required />
                 <button type="button" className="action-btn" onClick={() => setShowRppgModal(true)}>
-                  📷 Measure
+                  <FaCamera /> Measure
                 </button>
               </div>
             </label>

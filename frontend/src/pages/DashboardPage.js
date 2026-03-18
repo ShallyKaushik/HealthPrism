@@ -31,7 +31,7 @@ const featureImgChatbot = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2w
 function DashboardPage() {
   
   useEffect(() => {
-    document.title = 'Features :)';
+    document.title = 'Features | HealthPrism';
   }, []);
   const { user } = useAuth();
   const { predictionHistory, latestPrediction, loading } = usePrediction();
@@ -60,8 +60,8 @@ function DashboardPage() {
         {latestPrediction === null ? (
           // --- STATE 1: NO PREDICTION YET ---
           <div className="welcome-prompt-card">
-            <h2>Welcome to HealthPrism, {user?.fullname}!</h2>
-            <p>Get your free, heart risk score in just 2 minutes.</p>
+            <h2>Welcome to HealthPrism, {user?.fullname}</h2>
+            <p>Assess your cardiovascular health risk in under 2 minutes with our clinical-grade analysis.</p>
             <Link to="/predict" className="hero-button-primary">
               Get Started Now
             </Link>

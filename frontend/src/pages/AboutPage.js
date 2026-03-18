@@ -53,19 +53,19 @@ function AboutPage() {
             
             <div className="team-member-card">
               <img src={teamImg1} alt="Team Member 1" />
-              <h3>Shelly Kaushik</h3>
+              <h3>Aryan Gupta</h3>
               <p></p>
             </div>
             
             <div className="team-member-card">
               <img src={teamImg2} alt="Team Member 2" />
-              <h3>Souryapriya Choudhary</h3>
+              <h3>Shelly Kaushik</h3>
               <p></p>
             </div>
             
             <div className="team-member-card">
               <img src={teamImg3} alt="Team Member 3" />
-              <h3>Aryan Gupta</h3>
+              <h3>Souryapriya Choudhary</h3>
               <p></p>
             </div>
 

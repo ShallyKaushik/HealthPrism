@@ -11,6 +11,7 @@ import ResultCard from '../components/ResultCard';
 import { usePrediction } from '../context/PredictionContext';
 import RiskFactors from '../components/RiskFactors'; // Your "Explainability" component
 import RPPGHeartRate from '../components/RPPGHeartRate'; // Added for rPPG
+import { FaHeartbeat, FaCamera } from 'react-icons/fa';
 
 function PredictorPage() {
   
@@ -109,7 +110,7 @@ function PredictorPage() {
     <div className="predictor-container">
       <div className="predictor-card">
         <div className="predictor-header">
-          <span className="header-icon">🩺</span>
+          <span className="header-icon"><FaHeartbeat /></span>
           <h2>Heart Risk Predictor</h2>
           <p>Enter your 8 key health metrics, selected by our AI, to get an instant risk prediction.</p>
         </div>
@@ -132,7 +133,7 @@ function PredictorPage() {
               <div className="input-with-action">
                 <input type="number" name="thalach" value={formData.thalach} onChange={handleChange} required min="60" max="220"/>
                 <button type="button" className="action-btn" onClick={() => setShowRppgModal(true)}>
-                  📷 Measure
+                  <FaCamera /> Measure
                 </button>
               </div>
             </label>

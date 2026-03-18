@@ -2,10 +2,13 @@
 
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
+import { FaSun, FaMoon } from 'react-icons/fa';
 import './Navbar.css';
 
 function Navbar() {
   const { token, user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const location = useLocation();
 
   return (
@@ -30,6 +33,14 @@ function Navbar() {
 
         {/* 3. Action Buttons */}
         <div className="navbar-actions">
+          <button 
+            onClick={toggleTheme} 
+            className="theme-toggle" 
+            title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+          >
+            {theme === 'light' ? <FaMoon /> : <FaSun />}
+          </button>
+
           {token ? (
             <>
               <Link to="/profile" className="navbar-avatar-link" title="View Profile">

@@ -4,6 +4,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { PredictionProvider } from './context/PredictionContext'; 
 import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // --- Import All Your Reusable Components ---
@@ -28,9 +29,10 @@ import AdminPage from './pages/AdminPage';
 function App() {
   return (
     <Router>
-      <AuthProvider>
-        <PredictionProvider>
-          <ScrollToTop /> {/* This fixes the scroll bug on page navigation */}
+      <ThemeProvider>
+        <AuthProvider>
+          <PredictionProvider>
+            <ScrollToTop /> {/* This fixes the scroll bug on page navigation */}
         <div className="App">
           
           <Navbar />
@@ -65,11 +67,12 @@ function App() {
           </main>
           
           <ChatbotIcon />
-          <Footer />
+            <Footer />
 
-        </div>
-        </PredictionProvider>
-      </AuthProvider>
+          </div>
+          </PredictionProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </Router>
   );
 }

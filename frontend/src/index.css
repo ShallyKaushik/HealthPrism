@@ -18,19 +18,36 @@ html {
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;600;700&display=swap');
 
 :root {
-  --color-primary: #2563eb;       /* Trustworthy Blue */
-  --color-primary-dark: #1d4ed8;
-  --color-secondary: #22c55e;      /* Health Green */
-  --color-accent: #9333ea;         /* AI Purple */
+  --color-primary: #2F6FED;       /* Clinical Soft Blue */
+  --color-primary-dark: #2558C8;
+  --color-secondary: #5BA4A4;      /* Muted Teal */
+  --color-accent: #7BC47F;         /* Health Green Accent */
   
-  --color-text: #1e293b;           /* Dark Slate */
-  --color-text-light: #475569;
+  --color-text: #2E2E2E;           /* Charcoal Text */
+  --color-text-light: #6B7C93;     /* Muted Steel */
   
-  --color-bg: #f9fafb;             /* Soft Grey */
+  --color-bg: #F7F9FB;             /* Soft Off-white Background */
   --color-bg-white: #ffffff;
-  --color-border: #e5e7eb;
+  --color-border: #E3E8EF;         /* Subtle Border */
 
-  --gradient-ai: linear-gradient(135deg, #2563eb, #9333ea);
+  --color-shadow: rgba(0, 0, 0, 0.05);
+  --gradient-ai: linear-gradient(135deg, #2F6FED, #5BA4A4);
+}
+
+[data-theme='dark'] {
+  --color-primary: #4A88FF;       /* Brighter Blue for Dark BG */
+  --color-primary-dark: #3B71E0;
+  --color-secondary: #74B9B9;      /* Muted Teal */
+  --color-accent: #4ADE80;         /* Health Green Accent */
+  
+  --color-text: #F3F4F6;           /* Near White Text */
+  --color-text-light: #9CA3AF;     /* Gray Text */
+  
+  --color-bg: #0F172A;             /* Slate 900 */
+  --color-bg-white: #1E293B;       /* Slate 800 */
+  --color-border: #334155;         /* Slate 700 */
+
+  --color-shadow: rgba(0, 0, 0, 0.3);
 }
 
 /* --- Base Setup --- */
