@@ -9,3 +9,7 @@ database.db
 # Node.js / React
 frontend/node_modules/
 .DS_Store
+
+# Environment Variables
+.env
+**/ .env
