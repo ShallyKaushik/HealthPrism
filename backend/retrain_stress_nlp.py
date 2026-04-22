@@ -15,9 +15,9 @@ print("--- Starting NLP Stress Model Training Pipeline ---")
 try:
     # Go up one directory to find the CSV
     data = pd.read_csv('../stress_data.csv') 
-    print("✅ Raw stress data loaded successfully.")
+    print("Raw stress data loaded successfully.")
 except FileNotFoundError:
-    print("❌ Error: 'stress_data.csv' not found. Make sure it's in the root project folder.")
+    print("Error: 'stress_data.csv' not found. Make sure it's in the root project folder.")
     exit()
 
 # --- 2. Data Cleaning & Feature Engineering (The "Updates") ---
@@ -54,7 +54,7 @@ def generate_sentiment(stress_level):
 
 data['Sentiment_Score'] = data['Stress Level'].apply(generate_sentiment)
 
-print("✅ Data cleaning and NLP feature engineering complete.")
+print("Data cleaning and NLP feature engineering complete.")
 
 # --- 3. Define Features (X) and Target (Y) ---
 # We now have 11 input features + 1 NLP feature = 12 total features
@@ -107,12 +107,12 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 print("Starting FINAL NLP Stress Model training...")
 pipeline_final.fit(X_train, y_train)
-print("✅ NLP Stress Model training complete!")
+print("NLP Stress Model training complete!")
 
 # Test its accuracy
 y_pred = pipeline_final.predict(X_test)
 accuracy = accuracy_score(y_test, y_pred)
-print(f"\n✅ --- Optimized NLP Stress Model Accuracy: {accuracy * 100:.2f}% --- ✅")
+print(f"\n--- Optimized NLP Stress Model Accuracy: {accuracy * 100:.2f}% --- ")
 print("\nClassification Report:")
 print(classification_report(y_test, y_pred))
 
@@ -120,4 +120,4 @@ print(classification_report(y_test, y_pred))
 FINAL_MODEL_FILE = 'stress_model_v2.joblib'
 joblib.dump(pipeline_final, FINAL_MODEL_FILE)
 
-print(f"\n✅ --- SUCCESS! Optimized NLP STRESS model saved to '{FINAL_MODEL_FILE}' --- ✅")
+print(f"\n--- SUCCESS! Optimized NLP STRESS model saved to '{FINAL_MODEL_FILE}' --- ")

@@ -15,9 +15,9 @@ print("--- Starting ML Optimization Pipeline ---")
 # --- 1. Load Data ---
 try:
     data = pd.read_csv('../heart_data.csv') # Use '../' to go up one folder
-    print("✅ Data loaded successfully.")
+    print("Data loaded successfully.")
 except FileNotFoundError:
-    print("❌ Error: 'heart_data.csv' not found. Make sure it's in the root project folder.")
+    print("Error: 'heart_data.csv' not found. Make sure it's in the root project folder.")
     exit()
 
 # --- 2. PHASE 1 (The "Research"): Train on ALL 13 Features ---
@@ -54,7 +54,7 @@ pipeline_research.fit(X_train_full, y_train_full)
 # Test its accuracy (so we can compare)
 y_pred_full = pipeline_research.predict(X_test_full)
 accuracy_full = accuracy_score(y_test_full, y_pred_full)
-print(f"✅ Full Model (13 Features) Accuracy: {accuracy_full * 100:.2f}%")
+print(f"Full Model (13 Features) Accuracy: {accuracy_full * 100:.2f}%")
 
 
 # --- 3. PHASE 2 (The "Selection"): Extract Embedded Importances ---
@@ -81,7 +81,7 @@ importances = classifier_full.feature_importances_
 feature_importance_list = list(zip(final_feature_names, importances))
 feature_importance_list.sort(key=lambda x: x[1], reverse=True)
 
-print("✅ Feature Importance (Top to Bottom):")
+print("Feature Importance (Top to Bottom):")
 for feature, importance in feature_importance_list:
     print(f"- {feature}: {importance * 100:.2f}%")
 
@@ -95,7 +95,7 @@ print("\n--- Phase 3: Training FINAL Optimized Model (Top 8 Features) ---")
 OPTIMIZED_NUMERIC_FEATURES = ['age', 'trestbps', 'chol', 'thalach', 'oldpeak']
 OPTIMIZED_CATEGORICAL_FEATURES = ['cp', 'ca', 'thal']
 OPTIMIZED_FEATURES = OPTIMIZED_NUMERIC_FEATURES + OPTIMIZED_CATEGORICAL_FEATURES
-print(f"✅ Selected Features: {OPTIMIZED_FEATURES}")
+print(f"Selected Features: {OPTIMIZED_FEATURES}")
 
 # Create a new, smaller dataset
 X_optimized = data[OPTIMIZED_FEATURES]
@@ -123,7 +123,7 @@ pipeline_final.fit(X_train_opt, y_train_opt)
 # Test its accuracy
 y_pred_opt = pipeline_final.predict(X_test_opt)
 accuracy_opt = accuracy_score(y_test_opt, y_pred_opt)
-print(f"✅ Optimized Model (Top 8 Features) Accuracy: {accuracy_opt * 100:.2f}%")
+print(f"Optimized Model (Top 8 Features) Accuracy: {accuracy_opt * 100:.2f}%")
 
 # --- 5. SAVE THE FINAL MODEL ---
 # We overwrite the old, 13-feature model with our new, 8-feature optimized one
@@ -136,6 +136,6 @@ SIMPLE_MODEL_FILE = 'heart_risk_pipeline_SIMPLE.joblib'
 joblib.dump(pipeline_final, SIMPLE_MODEL_FILE)
 
 
-print(f"\n✅ --- SUCCESS! Optimized model saved to '{FINAL_MODEL_FILE}' --- ✅")
-print(f"✅ --- (Also saved copy to '{SIMPLE_MODEL_FILE}') --- ✅")
+print(f"\n--- SUCCESS! Optimized model saved to '{FINAL_MODEL_FILE}' --- ")
+print(f"--- (Also saved copy to '{SIMPLE_MODEL_FILE}') --- ")
 print(f"Comparison: Full Model (13 features) @ {accuracy_full*100:.2f}% vs. Optimized (8 features) @ {accuracy_opt*100:.2f}%")

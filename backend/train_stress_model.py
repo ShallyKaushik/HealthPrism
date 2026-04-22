@@ -14,9 +14,9 @@ print("--- Starting Stress Model Training Pipeline ---")
 try:
     # Go up one directory to find the CSV
     data = pd.read_csv('../stress_data.csv') 
-    print("✅ Raw stress data loaded successfully.")
+    print("Raw stress data loaded successfully.")
 except FileNotFoundError:
-    print("❌ Error: 'stress_data.csv' not found. Make sure it's in the root project folder.")
+    print("Error: 'stress_data.csv' not found. Make sure it's in the root project folder.")
     exit()
 
 # --- 2. Data Cleaning & Feature Engineering (The "Updates") ---
@@ -44,7 +44,7 @@ def map_stress_level(level):
 
 data['Stress Level'] = data['Stress Level'].apply(map_stress_level)
 
-print("✅ Data cleaning and feature engineering complete.")
+print("Data cleaning and feature engineering complete.")
 
 # --- 3. Define Features (X) and Target (Y) ---
 # We have 10 input features for our model
@@ -97,12 +97,12 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 print("Starting FINAL Stress Model training...")
 pipeline_final.fit(X_train, y_train)
-print("✅ Stress Model training complete!")
+print("Stress Model training complete!")
 
 # Test its accuracy
 y_pred = pipeline_final.predict(X_test)
 accuracy = accuracy_score(y_test, y_pred)
-print(f"\n✅ --- Optimized Stress Model Accuracy: {accuracy * 100:.2f}% --- ✅")
+print(f"\n--- Optimized Stress Model Accuracy: {accuracy * 100:.2f}% --- ")
 print("\nClassification Report:")
 print(classification_report(y_test, y_pred))
 
@@ -110,4 +110,4 @@ print(classification_report(y_test, y_pred))
 FINAL_MODEL_FILE = 'stress_model.joblib'
 joblib.dump(pipeline_final, FINAL_MODEL_FILE)
 
-print(f"\n✅ --- SUCCESS! Optimized STRESS model saved to '{FINAL_MODEL_FILE}' --- ✅")
+print(f"\n--- SUCCESS! Optimized STRESS model saved to '{FINAL_MODEL_FILE}' --- ")

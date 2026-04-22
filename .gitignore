@@ -8,8 +8,18 @@ database.db
 
 # Node.js / React
 frontend/node_modules/
+frontend/.env
 .DS_Store
 
-# Environment Variables
+# Environment & Sensitive
 .env
-**/ .env
+.flaskenv
+**/__pycache__/
+**/*.pyc
+backend/.env
+backend/genai_error.log
+backend/chatbot_error.log
+
+# Databases
+database.db
+backend/chroma_db/

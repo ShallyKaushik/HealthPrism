@@ -34,12 +34,8 @@ function StressCoach() {
     // --- END OF NEW PAYLOAD ---
 
     try {
-      // Use environment variable for API URL
-      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
-      const response = await axios.post(
-        `${API_URL}/api/stress-coach`,
-        payload
-      );
+      const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+      const response = await axios.post(`${API_URL}/api/stress-coach`, payload);
       setPlan(response.data.stress_plan);
     } catch (err) {
       console.error("Error generating stress plan:", err);

@@ -18,36 +18,46 @@ html {
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;600;700&display=swap');
 
 :root {
-  --color-primary: #2F6FED;       /* Clinical Soft Blue */
-  --color-primary-dark: #2558C8;
-  --color-secondary: #5BA4A4;      /* Muted Teal */
-  --color-accent: #7BC47F;         /* Health Green Accent */
+  --color-primary: #4F6BED;       /* Requested Blue */
+  --color-primary-dark: #3A55D1;
   
-  --color-text: #2E2E2E;           /* Charcoal Text */
-  --color-text-light: #6B7C93;     /* Muted Steel */
+  --color-success: #10B981;       /* Semantic Green */
+  --color-warning: #F59E0B;       /* Semantic Yellow */
+  --color-danger:  #EF4444;       /* Semantic Red */
   
-  --color-bg: #F7F9FB;             /* Soft Off-white Background */
+  --color-text: #1F2937;          /* Gray 800 */
+  --color-text-light: #6B7280;    /* Gray 500 */
+  
+  --color-bg: #F3F4F6;            /* Light gray background */
   --color-bg-white: #ffffff;
-  --color-border: #E3E8EF;         /* Subtle Border */
-
-  --color-shadow: rgba(0, 0, 0, 0.05);
-  --gradient-ai: linear-gradient(135deg, #2F6FED, #5BA4A4);
+  --color-border: #E5E7EB;        /* Subtle Border */
+  --color-sidebar: #ffffff;
 }
 
 [data-theme='dark'] {
-  --color-primary: #4A88FF;       /* Brighter Blue for Dark BG */
-  --color-primary-dark: #3B71E0;
-  --color-secondary: #74B9B9;      /* Muted Teal */
-  --color-accent: #4ADE80;         /* Health Green Accent */
+  --color-primary: #637CFF;
+  --color-primary-dark: #4F6BED;
   
-  --color-text: #F3F4F6;           /* Near White Text */
-  --color-text-light: #9CA3AF;     /* Gray Text */
+  --color-text: #F9FAFB;
+  --color-text-light: #9CA3AF;
   
-  --color-bg: #0F172A;             /* Slate 900 */
-  --color-bg-white: #1E293B;       /* Slate 800 */
-  --color-border: #334155;         /* Slate 700 */
+  --color-bg: #111827;            /* Dark mode bg */
+  --color-bg-white: #1F2937;      /* Dark mode card */
+  --color-border: #374151;
+  --color-sidebar: #1F2937;
+}
 
-  --color-shadow: rgba(0, 0, 0, 0.3);
+/* Glassmorphism utilities */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+[data-theme='dark'] .glass-panel {
+  background: rgba(31, 41, 55, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* --- Base Setup --- */

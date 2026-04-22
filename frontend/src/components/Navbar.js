@@ -25,8 +25,8 @@ function Navbar() {
           <li><Link to="/" className={location.pathname === '/' ? 'active' : ''}>Home</Link></li>
           <li><Link to="/nutrition" className={location.pathname === '/nutrition' ? 'active' : ''}>Nutrition</Link></li>
           <li><Link to="/stress-test" className={location.pathname === '/stress-test' ? 'active' : ''}>Stress Predictor</Link></li>
-          <li><Link to="/chatbot" className={location.pathname === '/chatbot' ? 'active' : ''}>Chatbot</Link></li>
           {user?.is_admin && (
+
             <li><Link to="/admin" className={location.pathname === '/admin' ? 'active' : ''} style={{color: 'var(--color-accent)', fontWeight: 'bold'}}>Admin</Link></li>
           )}
         </ul>

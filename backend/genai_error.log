@@ -1,0 +1,56 @@
+
+--- 2026-04-22 17:05:02.997989 [NUTRITION] ---
+Status: 503
+Response: {
+  "error": {
+    "code": 503,
+    "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",
+    "status": "UNAVAILABLE"
+  }
+}
+
+
+--- 2026-04-22 17:28:20.634392 [NUTRITION] ---
+Status: 503
+Response: {
+  "error": {
+    "code": 503,
+    "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",
+    "status": "UNAVAILABLE"
+  }
+}
+
+
+--- 2026-04-22 17:50:10.171565 [NUTRITION] ---
+Status: 200
+Response: {
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "Given your age of 30 and your excellent *low* heart risk score of 1.0%, the focus of this meal plan is on *optimizing* your diet to support healthy cholesterol levels and maintain your outstanding cardiovascular health, rather than aggressive intervention. This plan emphasizes delicious, nutrient-dense foods rich in soluble fiber, healthy fats, and antioxidants, while naturally limiting saturated and trans fats.\n\nIt's about building sustainable, heart-healthy habits that are enjoyable and easy to incorporate into your life.\n\n---\n\n### **Key Principles of This Heart-Healthy Meal Plan:**\n\n1.  **Embrace Soluble Fiber:** Found in oats, barley, beans, lentils, apples, pears, and psyllium. Soluble fiber helps reduce the absorption of cholesterol into your bloodstream.\n2.  **Prioritize Healthy Fats:** Focus on monounsaturated and polyunsaturated fats from sources like olive oil, avocado, nuts, seeds, and fatty fish (omega-3s), which can help improve cholesterol profiles.\n3.  **Limit Saturated & Trans Fats:** Choose lean proteins, low-fat dairy, and healthy cooking methods. Avoid processed foods, fried foods, and baked goods that often contain trans fats.\n4.  **Load Up on Fruits & Vegetables:** Rich in antioxidants, vitamins, and fiber, they protect your heart and contribute to overall well-being.\n5.  **Choose Whole Grains:** Opt for whole-wheat bread, brown rice, quinoa, and oats over refined grains.\n6.  **Healthy Cooking Methods:** Baking, grilling, steaming, broiling, and stir-frying with minimal healthy oils.\n7.  **Hydration:** Drink plenty of water throughout the day.\n\n---\n\n### **3-Day Sample Meal Plan for Lowering Cholesterol (Low Risk)**\n\n**Day 1: Focus on Fiber & Omega-3s**\n\n*   **Breakfast (7:00 AM): Heart-Smart Oatmeal**\n    *   1/2 cup rolled oats (cooked with water or unsweetened almond milk)\n    *   1/2 cup mixed berries (fresh or frozen)\n    *   1 tbsp ground flaxseeds\n    *   1 tbsp chopped walnuts\n    *   *Optional:* Dash of cinnamon, splash of maple syrup or honey (limit added sugars)\n*   **Lunch (12:30 PM): Mediterranean Quinoa Salad with Chickpeas**\n    *   1 cup cooked quinoa\n    *   1/2 cup chickpeas (rinsed)\n    *   Plenty of mixed greens, cucumber, cherry tomatoes, bell peppers\n    *   2 oz grilled chicken breast (sliced) or extra chickpeas for vegetarian option\n    *   Dressing: 1 tbsp extra virgin olive oil, lemon juice, dried oregano\n*   **Snack (3:30 PM): Apple Slices with Almond Butter**\n    *   1 medium apple\n    *   1-2 tbsp natural almond butter (check for no added sugars or oils)\n*   **Dinner (7:00 PM): Baked Salmon with Roasted Veggies**\n    *   4-5 oz baked or grilled salmon (rich in omega-3s)\n    *   1 cup roasted broccoli and carrots (tossed lightly with olive oil, garlic, and herbs)\n    *   1/2 cup brown rice or whole-wheat couscous\n*   **Evening Snack (Optional):**\n    *   Small bowl of plain Greek yogurt with a few raspberries.\n\n**Day 2: Focus on Plant-Based Proteins & Healthy Fats**\n\n*   **Breakfast (7:00 AM): Avocado Toast with Egg**\n    *   1-2 slices whole-wheat toast\n    *   1/4 - 1/2 mashed avocado\n    *   1 soft-boiled or poached egg\n    *   Sliced tomatoes and a sprinkle of everything bagel seasoning or red pepper flakes\n*   **Lunch (12:30 PM): Hearty Lentil Soup & Whole-Grain Roll**\n    *   1.5 cups homemade or low-sodium lentil soup (packed with vegetables like carrots, celery, spinach)\n    *   1 small whole-grain dinner roll or 1/2 cup whole-wheat pasta in soup\n    *   Side salad with a light vinaigrette\n*   **Snack (3:30 PM): Orange and Walnuts**\n    *   1 large orange\n    *   Small handful (approx. 1/4 cup) walnuts\n*   **Dinner (7:00 PM): Chicken & Vegetable Stir-Fry**\n    *   4-5 oz lean chicken breast (sliced)\n    *   Plenty of colorful vegetables (broccoli, bell peppers, snow peas, mushrooms, bok choy)\n    *   Stir-fried in 1 tbsp sesame oil or olive oil with low-sodium soy sauce/tamari and fresh ginger\n    *   Served with 1/2 cup brown rice or quinoa\n*   **Evening Snack (Optional):**\n    *   Celery sticks with 2 tbsp hummus.\n\n**Day 3: Focus on Variety & Nutrient Density**\n\n*   **Breakfast (7:00 AM): Berry & Chia Seed Yogurt Parfait**\n    *   1 cup plain, unsweetened Greek yogurt (low-fat or full-fat if preferred, but low-fat aids cholesterol)\n    *   1/2 cup mixed berries\n    *   1 tbsp chia seeds\n    *   1 tbsp chopped pistachios or almonds\n*   **Lunch (12:30 PM): Whole-Wheat Pita with Hummus & Veggies**\n    *   1 whole-wheat pita pocket (cut in half)\n    *   Spread with 3-4 tbsp hummus\n    *   Filled with sliced cucumber, tomato, shredded carrots, spinach, and a sprinkle of feta cheese (optional, in moderation)\n    *   Side of baby carrots and bell pepper strips\n*   **Snack (3:30 PM): Pear**\n    *   1 medium pear\n    *   *Optional:* 1 small rice cake with a thin layer of almond butter.\n*   **Dinner (7:00 PM): Black Bean Burgers with Baked Sweet Potato Fries**\n    *   1 homemade or store-bought (check for low saturated fat) black bean burger on a whole-grain bun\n    *   Load with lettuce, tomato, onion, pickle, and a dollop of avocado or light salsa\n    *   Side of baked sweet potato fries (tossed with a tiny bit of olive oil and paprika, then baked until crispy)\n*   **Evening Snack (Optional):**\n    *   Small handful of pumpkin seeds.\n\n---\n\n### **Important Considerations for Your Low-Risk Status:**\n\n*   **Consistency is Key:** Your current low risk is a testament to good habits. Continue to make these healthy choices most of the time.\n*   **Flexibility & Enjoyment:** This is a sample plan. Feel free to swap meals and ingredients based on your preferences and what's in season. The goal is to make healthy eating enjoyable and sustainable for the long term.\n*   **Listen to Your Body:** Pay attention to hunger and fullness cues.\n*   **Physical Activity:** While this is a meal plan, remember that regular physical activity (e.g., 150 minutes of moderate-intensity exercise per week) is a powerful tool for lowering cholesterol and maintaining heart health.\n*   **Sodium & Added Sugars:** Be mindful of these. Choose whole, unprocessed foods most often.\n*   **Hydration:** Drink plenty of water throughout the day. Aim for 8 glasses (64 ounces) or more.\n*   **Alcohol:** If you consume alcohol, do so in moderation (up to one drink per day for women, up to two for men).\n\nThis plan is designed to naturally support healthy cholesterol levels and maintain your excellent heart health. Continue to follow up with your healthcare provider for regular check-ups and personalized advice."
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 90,
+    "candidatesTokenCount": 1683,
+    "totalTokenCount": 3034,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 90
+      }
+    ],
+    "thoughtsTokenCount": 1261
+  },
+  "modelVersion": "gemini-2.5-flash",
+  "responseId": "6rzoabbJD5nf4-EPqZn42AM"
+}
+

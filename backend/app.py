@@ -20,33 +20,38 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 
 # --- 2. SETUP ---
-load_dotenv()
+load_dotenv(override=True)
 import sklearn
-print(f"DEBUG: Sklearn Version: {sklearn.__version__}")
-print(f"DEBUG: CWD: {os.getcwd()}")
+
+from services.openai_service import generate_heart_explanation
+from services.nutrition_rag_service import rag_service as nutrition_rag_service
+from services.chatbot_service import chatbot_service
+from services.ai_router import ai_router
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 app = Flask(__name__, static_folder='../frontend/build', static_url_path='/')
-CORS(app)
+# Strict CORS for production
+CORS(app, origins=[os.getenv("FRONTEND_URL", "*")])
 
 # --- 3.1 MongoDB Setup ---
 mongo_uri = os.getenv("MONGO_URI")
 try:
     client = MongoClient(mongo_uri, serverSelectionTimeoutMS=5000)
     db = client['HealthPrism']
-    # Trigger connection to verify
-    db.command('ismaster')
     users_collection = db.users
     heart_predictions_collection = db.heart_predictions
     stress_predictions_collection = db.stress_predictions
-    print(f"✅ Connected to MongoDB. Database: {db.name}")
+    chats_collection = db.chats
+    print(f"Connected to MongoDB. Database: {db.name}")
     print(f"DEBUG: Collections: {db.list_collection_names()}")
 except Exception as e:
-    print(f"⚠️ Warning: Could not connect to MongoDB. Database features will be disabled. Error: {e}")
+    print(f"Warning: Could not connect to MongoDB. Database features will be disabled. Error: {e}")
     db = None
     users_collection = None
     heart_predictions_collection = None
     stress_predictions_collection = None
+    chats_collection = None
 
 # --- 3.2 JWT & Auth Helpers ---
 SECRET_KEY = os.getenv("SECRET_KEY", "your_secret_key")
@@ -90,23 +95,23 @@ def admin_required(f):
 # Model 1: Heart Risk (Optimized 8-Feature)
 try:
     heart_model = joblib.load('heart_risk_pipeline.joblib')
-    print("✅ OPTIMIZED Heart Model (Top 8 Features) loaded successfully!")
+    print("OPTIMIZED Heart Model (Top 8 Features) loaded successfully!")
 except Exception as e:
-    print(f"❌ Error loading Heart model: {e}")
+    print(f"Error loading Heart model: {e}")
     heart_model = None
 
 # Model 2: Stress Predictor (NEW v2 with NLP)
 try:
     stress_model = joblib.load('stress_model_v2.joblib')
-    print("✅ NEW Stress Model v2 (with NLP) loaded successfully!")
+    print("NEW Stress Model v2 (with NLP) loaded successfully!")
 except Exception as e:
-    print(f"❌ Error loading Stress model v2: {e}")
+    print(f"Error loading Stress model v2: {e}")
     stress_model = None
 # --- END OF MODEL LOADING ---
 
 # --- 5. Initialize NLP Analyzer ---
 sentiment_analyzer = SentimentIntensityAnalyzer()
-print("✅ VADER Sentiment Analyzer loaded successfully!")
+print("VADER Sentiment Analyzer loaded successfully!")
 
 # --- 6. Define Feature Lists ---
 # For Heart Model
@@ -151,13 +156,32 @@ def predict():
         
         probabilities = heart_model.predict_proba(input_df)
         risk_probability = float(probabilities[0][0]) # Class 0 (High Risk)
+        
+        # Add OpenAI generated explanation
+        explanation_data = generate_heart_explanation(data, risk_probability)
 
         return jsonify({
             'message': 'Prediction successful',
-            'probability_high_risk': risk_probability
+            'probability_high_risk': risk_probability,
+            'ai_explanation': explanation_data
         }), 200
     except Exception as e:
         print(f" Error during heart prediction: {e}")
+        return jsonify({'error': f'Internal server error: {e}'}), 500
+
+# --- 7.5 NEW: Nutrition RAG Plan Route ---
+@app.route('/api/nutrition-plan', methods=['POST'])
+def nutrition_plan():
+    try:
+        data = request.json
+        if not data:
+            return jsonify({'error': 'No JSON data received'}), 400
+            
+        plan = nutrition_rag_service.build_nutrition_plan(data)
+        
+        return jsonify(plan), 200
+    except Exception as e:
+        print(f"Error generating nutrition plan: {e}")
         return jsonify({'error': f'Internal server error: {e}'}), 500
 
 # --- 8. NEW: Stress Prediction Route (V2 with NLP) ---
@@ -211,7 +235,7 @@ def predict_stress():
         }), 200
         
     except Exception as e:
-        print(f"❌ Error during stress prediction: {e}")
+        print(f"Error during stress prediction: {e}")
         return jsonify({'error': f'Internal server error: {e}'}), 500
 # --- END OF NEW STRESS ROUTE ---
 
@@ -271,7 +295,7 @@ def calculate_rppg():
             b, a = butter(2, [low, high], btype='bandpass')
             y_filtered = filtfilt(b, a, y)
         except Exception as e:
-            print(f"⚠️ Filter error: {e}, falling back to standard signal")
+            print(f"Filter error: {e}, falling back to standard signal")
             y_filtered = y
             
         # 4. Welch's Method for Power Spectral Density (PSD) estimation
@@ -279,7 +303,7 @@ def calculate_rppg():
             n_seg = min(len(y_filtered), 128) # Segment size for averaging
             f, pxx = welch(y_filtered, fs=fps, nperseg=n_seg, nfft=1024)
         except Exception as e:
-            print(f"⚠️ Welch error: {e}, falling back to FFT")
+            print(f"Welch error: {e}, falling back to FFT")
             # Fallback to FFT on filtered signal
             n = len(y_filtered)
             f = np.fft.fftfreq(n, 1/fps)
@@ -302,7 +326,7 @@ def calculate_rppg():
         }), 200
         
     except Exception as e:
-        print(f"❌ Error during advanced rPPG calculation: {e}")
+        print(f"Error during advanced rPPG calculation: {e}")
         return jsonify({'error': f'Internal server error: {e}'}), 500
 # --- END OF rPPG ROUTE ---
 
@@ -365,14 +389,13 @@ def login():
             'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
         }, JWT_SECRET_KEY, algorithm="HS256")
         
+        user_data = {k: v for k, v in user.items() if k != 'password'}
+        user_data['_id'] = str(user_data['_id'])
+
         return jsonify({
             'message': 'Login successful',
             'access_token': token,
-            'user': {
-                'fullname': user['fullname'],
-                'email': user['email'],
-                'is_admin': user.get('is_admin', False)
-            }
+            'user': user_data
         }), 200
     except Exception as e:
         return jsonify({'error': f'Internal server error: {e}'}), 500
@@ -478,50 +501,6 @@ def get_stress_history(current_user):
         return jsonify({'error': str(e)}), 500
 
 
-# --- 9. AI CHATBOT ROUTE (GenAI) ---
-@app.route('/api/chatbot', methods=['POST'])
-def chatbot():
-    SYSTEM_PROMPT = (
-        "You are HealthBot, a friendly and helpful AI assistant..." 
-    )
-    data = request.json or {}
-    messages = data.get('messages', [])
-    
-    if not messages: 
-        return jsonify({'answer': 'Hi there! How can I help you today?'})
-        
-    user_message = messages[-1].get('text', '')
-    if not user_message: return jsonify({'answer': '...'})
-    
-    try:
-        apiKey = os.getenv("GEMINI_API_KEY")
-        if not apiKey: raise Exception("GEMINI_API_KEY not found")
-        
-        apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
-        
-        payload = {
-            "contents": [{"parts": [{"text": user_message}]}],
-            "systemInstruction": {"parts": [{"text": SYSTEM_PROMPT}]}
-        }
-        
-        headers = {
-            'Content-Type': 'application/json',
-            'x-goog-api-key': apiKey 
-        }
-        
-        response = requests.post(apiUrl, json=payload, headers=headers, verify=False)
-        response.raise_for_status()
-        result = response.json()
-        
-        text = result.get('candidates', [{}])[0].get('content', {}).get('parts', [{}])[0].get('text', '')
-        if not text: raise Exception("No text found in API response")
-        
-        return jsonify({'answer': text})
-        
-    except Exception as e:
-        print(f"❌ Error processing chatbot request: {e}")
-        return jsonify({'error': 'Sorry, I\'m facing a technical issue.'}), 500
-
 # --- 10. AI NUTRITION PLANNER ROUTE (GenAI + Risk Score) ---
 @app.route('/api/nutrition-planner', methods=['POST'])
 def nutrition_planner():
@@ -547,26 +526,32 @@ def nutrition_planner():
     **IMPORTANT**: You MUST tailor the meal plan to be appropriate for my heart risk score.
     """
     try:
-        apiKey = os.getenv("GEMINI_API_KEY")
-        if not apiKey: raise Exception("GEMINI_API_KEY not found")
-        apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
-        payload = {
-            "contents": [{"parts": [{"text": USER_PROMPT}]}],
-            "systemInstruction": {"parts": [{"text": SYSTEM_PROMPT}]}
+        # Construct the context for the router
+        user_data = {
+            "age": age,
+            "goal": goal,
+            "restrictions": restrictions,
+            "health_context": f"Latest heart risk score: {risk_text}"
         }
-        headers = {
-            'Content-Type': 'application/json',
-            'x-goog-api-key': apiKey 
-        }
-        response = requests.post(apiUrl, json=payload, headers=headers, verify=False)
-        response.raise_for_status()
-        result = response.json()
-        text = result.get('candidates', [{}])[0].get('content', {}).get('parts', [{}])[0].get('text', '')
-        if not text: raise Exception("No text found in API response")
+        
+        # Use AI Router for high-availability generation
+        text = ai_router.generate_response(
+            query=USER_PROMPT,
+            user_data=user_data,
+            history=[],
+            context=SYSTEM_PROMPT
+        )
+        
+        if not text: raise Exception("AI Router returned empty response")
         return jsonify({'meal_plan': text})
     except Exception as e:
-        print(f"❌ Error processing nutrition plan request: {e}")
-        return jsonify({'error': 'Sorry, I\'m facing a technical issue.'}), 500
+        print(f"Error processing nutrition plan request: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+
+
+
 
 # --- 11. ADVANCED AI STRESS COACH (GenAI + NLP) ---
 @app.route('/api/stress-coach', methods=['POST'])
@@ -595,27 +580,99 @@ def stress_coach():
     - My LATEST HEART RISK SCORE: {risk_text}
     """
     try:
-        apiKey = os.getenv("GEMINI_API_KEY")
-        if not apiKey: raise Exception("GEMINI_API_KEY not found")
-        apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
-        payload = {
-            "contents": [{"parts": [{"text": USER_PROMPT}]}],
-            "systemInstruction": {"parts": [{"text": SYSTEM_PROMPT}]}
+        # Construct the context for the router
+        user_data = {
+            "feeling": user_text,
+            "sentiment": f"{sentiment_label} (Score: {sentiment_score})",
+            "health_context": f"Latest heart risk score: {risk_text}"
         }
-        headers = {
-            'Content-Type': 'application/json',
-            'x-goog-api-key': apiKey 
-        }
-        response = requests.post(apiUrl, json=payload, headers=headers, verify=False)
-        response.raise_for_status()
-        result = response.json()
-        text = result.get('candidates', [{}])[0].get('content', {}).get('parts', [{}])[0].get('text', '')
-        if not text: raise Exception("No text found in API response")
+        
+        # Use AI Router for high-availability generation
+        text = ai_router.generate_response(
+            query=USER_PROMPT,
+            user_data=user_data,
+            history=[],
+            context=SYSTEM_PROMPT
+        )
+        
+        if not text: raise Exception("AI Router returned empty response")
         return jsonify({'stress_plan': text})
     except Exception as e:
-        print(f"❌ Error processing stress plan request: {e}")
-        return jsonify({'error': 'Sorry, I\'m facing a technical issue.'}), 500
+        print(f"Error processing stress plan request: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+
+
+
 
 # --- 12. Run the Application ---
+@app.route('/api/chat', methods=['POST'])
+@token_required
+def chat(current_user):
+    try:
+        data = request.json
+        user_query = data.get('message')
+        if not user_query:
+            return jsonify({'error': 'Message is required'}), 400
+
+        # 1. Fetch History from DB (Last 10 messages)
+        history_cursor = chats_collection.find(
+            {'user_id': str(current_user['_id'])}
+        ).sort('timestamp', -1).limit(10)
+        
+        # Reverse to get chronological order
+        history = []
+        for doc in list(history_cursor)[::-1]:
+            history.append({'role': 'user', 'content': doc['message']})
+            history.append({'role': 'assistant', 'content': doc['reply']})
+
+        # 2. Prepare User Profile Context
+        profile = {
+            "fullname": current_user.get("fullname", "User"),
+            "age": current_user.get("age", "30s"),
+            "weight": current_user.get("weight", "--"),
+            "diet_type": current_user.get("diet_type", "balanced health"),
+            "goal": current_user.get("goal", "optimal wellness"),
+            "risk_level": "Normal",
+            "stress_level": "Stable"
+        }
+        
+        # Latest heart prediction
+        latest_heart = heart_predictions_collection.find_one(
+            {'user_id': str(current_user['_id'])},
+            sort=[('timestamp', -1)]
+        )
+        if latest_heart:
+            prob = latest_heart.get('probability', 0)
+            profile["risk_level"] = "High" if prob > 0.6 else "Medium" if prob > 0.3 else "Low"
+
+        # Latest stress prediction
+        latest_stress = stress_predictions_collection.find_one(
+            {'user_id': str(current_user['_id'])},
+            sort=[('timestamp', -1)]
+        )
+        if latest_stress:
+            profile["stress_level"] = latest_stress.get('risk_level', 'Stable')
+
+        # 3. Generate response via ChatbotService
+        reply = chatbot_service.generate_chat_response(user_query, profile, history)
+
+        # 4. Save to History
+        chats_collection.insert_one({
+            'user_id': str(current_user['_id']),
+            'message': user_query,
+            'reply': reply,
+            'timestamp': datetime.datetime.utcnow()
+        })
+
+        return jsonify({'reply': reply}), 200
+
+    except Exception as e:
+        print(f"Chat API Error: {str(e)}")
+        return jsonify({'error': 'Failed to process chat session'}), 500
+
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    # Respect PORT env var for deployment (e.g. Render/Heroku)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)

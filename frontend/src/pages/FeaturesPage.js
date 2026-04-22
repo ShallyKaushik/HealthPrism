@@ -3,7 +3,7 @@
 import React from 'react';
 import './FeaturesPage.css'; // We'll create this CSS file next
 import { 
-  FaHeartbeat, FaAppleAlt, FaMoon, FaCommentDots, FaBell 
+  FaHeartbeat, FaAppleAlt, FaMoon, FaBell 
 } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
@@ -61,22 +61,6 @@ function FeaturesPage() {
             and improve your sleep quality, both of which directly impact heart health.
           </p>
           <Link to="/stress" className="feature-item-button disabled">
-            Coming Soon
-          </Link>
-        </div>
-
-        {/* --- Feature 4: AI Chatbot --- */}
-        <div className="feature-item-card">
-          <div className="feature-item-icon" style={{ color: 'var(--color-accent)' }}>
-            <FaCommentDots />
-          </div>
-          <h2>AI Health Chatbot</h2>
-          <p>
-            Have a question? Our AI-powered HealthBot is available 24/7 to 
-            help you understand complex medical terms, get quick health tips, or
-            learn more about your results.
-          </p>
-          <Link to="/chatbot" className="feature-item-button disabled">
             Coming Soon
           </Link>
         </div>
