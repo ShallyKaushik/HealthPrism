@@ -2,7 +2,7 @@
 
 import joblib
 import pandas as pd
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import requests
 import os
@@ -169,7 +169,7 @@ def predict():
         print(f" Error during heart prediction: {e}")
         return jsonify({'error': f'Internal server error: {e}'}), 500
 
-# --- 7.5 NEW: Nutrition RAG Plan Route ---
+# --- 7.5 NEW: Nutrition Plan Route (Direct OpenAI) ---
 @app.route('/api/nutrition-plan', methods=['POST'])
 def nutrition_plan():
     try:
@@ -179,10 +179,19 @@ def nutrition_plan():
             
         plan = nutrition_rag_service.build_nutrition_plan(data)
         
+        # DEBUG: Log the plan structure before returning
+        if plan and 'days' in plan:
+            print("--- NUTRITION PLAN OUTPUT ---")
+            for d in plan['days']:
+                dishes = [m.get('dish', '?') for m in d.get('meals', [])]
+                print(f"  Day {d.get('day')}: {dishes}")
+            print("--- END ---")
+        
         return jsonify(plan), 200
     except Exception as e:
         print(f"Error generating nutrition plan: {e}")
         return jsonify({'error': f'Internal server error: {e}'}), 500
+
 
 # --- 8. NEW: Stress Prediction Route (V2 with NLP) ---
 @app.route('/api/predict-stress', methods=['POST'])

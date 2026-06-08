@@ -9,8 +9,9 @@ vaderSentiment
 urllib3
 gunicorn
 numpy
+scipy
 pymongo
 pyjwt
 bcrypt
 openai
-chromadb
+chromadb
