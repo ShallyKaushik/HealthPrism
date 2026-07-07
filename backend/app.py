@@ -615,7 +615,24 @@ def stress_coach():
 
 
 
-# --- 12. Run the Application ---
+# --- 12. RAG-Powered Chat with Health Domain Guardrails ---
+
+@app.route('/api/rag-status', methods=['GET'])
+def rag_status():
+    """Health check endpoint for the RAG system."""
+    try:
+        from services.chatbot_service import chatbot_service as cs
+        status = {
+            'rag_active': cs.collection is not None,
+            'chunks_loaded': cs.collection.count() if cs.collection else 0,
+            'embedding_model': 'text-embedding-3-small',
+            'guardrail': 'health-domain-only',
+            'version': 'RAG v2.0'
+        }
+        return jsonify(status), 200
+    except Exception as e:
+        return jsonify({'rag_active': False, 'error': str(e)}), 200
+
 @app.route('/api/chat', methods=['POST'])
 @token_required
 def chat(current_user):
@@ -664,10 +681,14 @@ def chat(current_user):
         if latest_stress:
             profile["stress_level"] = latest_stress.get('risk_level', 'Stable')
 
-        # 3. Generate response via ChatbotService
+        # 3. Check health domain guardrail (pre-check for response metadata)
+        from services.chatbot_service import is_health_related
+        is_health = is_health_related(user_query)
+
+        # 4. Generate response via RAG-powered ChatbotService
         reply = chatbot_service.generate_chat_response(user_query, profile, history)
 
-        # 4. Save to History
+        # 5. Save to History
         chats_collection.insert_one({
             'user_id': str(current_user['_id']),
             'message': user_query,
@@ -675,7 +696,14 @@ def chat(current_user):
             'timestamp': datetime.datetime.utcnow()
         })
 
-        return jsonify({'reply': reply}), 200
+        # 6. Return with metadata
+        response_data = {
+            'reply': reply,
+            'rag_powered': chatbot_service.collection is not None,
+            'health_domain': is_health,
+        }
+
+        return jsonify(response_data), 200
 
     except Exception as e:
         print(f"Chat API Error: {str(e)}")
