@@ -1,0 +1,101 @@
+# HealthPrism Comprehensive Health Knowledge Base
+# Each section separated by double-newline acts as a retrieval chunk for RAG.
+
+## Cardiovascular Health — Risk Factors
+The major modifiable risk factors for cardiovascular disease (CVD) include high blood pressure (hypertension), high LDL cholesterol, smoking, diabetes, obesity, physical inactivity, and unhealthy diet. Non-modifiable risk factors include age, gender, and family history. A resting blood pressure above 130/80 mmHg is classified as Stage 1 hypertension by the American Heart Association. Total cholesterol should ideally be below 200 mg/dL, with LDL below 100 mg/dL and HDL above 60 mg/dL. Triglycerides should be below 150 mg/dL.
+
+## Cardiovascular Health — Warning Signs
+Warning signs of a heart attack include chest pain or discomfort (pressure, squeezing, fullness), pain radiating to the arm, jaw, neck, or back, shortness of breath, cold sweat, nausea, and lightheadedness. Women may experience atypical symptoms like fatigue, indigestion, and upper back pressure. If any of these symptoms appear, call emergency services immediately. Early intervention with aspirin and medical attention can significantly improve outcomes.
+
+## Cardiovascular Health — Prevention Strategies
+To prevent heart disease: maintain a heart-healthy diet (Mediterranean or DASH diet), exercise at least 150 minutes per week at moderate intensity, maintain a healthy BMI (18.5–24.9), quit smoking, limit alcohol to moderate levels (1 drink/day for women, 2 for men), manage stress, and get regular health screenings. Omega-3 fatty acids from fish, flaxseed, and walnuts are beneficial for heart health. Reduce sodium intake to less than 2,300 mg/day (ideally 1,500 mg for those with hypertension).
+
+## Blood Pressure Management
+Normal blood pressure is below 120/80 mmHg. Elevated is 120-129/<80. Stage 1 hypertension is 130-139 or 80-89. Stage 2 is 140+ or 90+. The DASH diet (Dietary Approaches to Stop Hypertension) emphasizes fruits, vegetables, whole grains, lean protein, and low-fat dairy while limiting sodium, red meat, and sweets. Regular aerobic exercise, weight management, stress reduction, limiting caffeine and alcohol, and adequate potassium intake (bananas, sweet potatoes, spinach) all help lower blood pressure naturally.
+
+## Cholesterol Management
+LDL ("bad") cholesterol can be reduced by eating soluble fiber (oats, beans, lentils, apples), using healthy fats (olive oil, avocados, nuts), exercising regularly, and maintaining a healthy weight. HDL ("good") cholesterol can be raised by regular aerobic exercise, consuming healthy fats, and quitting smoking. Trans fats (partially hydrogenated oils) should be completely avoided. Statins may be prescribed for those with high cardiovascular risk who cannot control cholesterol through lifestyle changes alone.
+
+## Nutrition — Macronutrients
+Macronutrients consist of carbohydrates, proteins, and fats. A balanced diet typically contains 45–65% carbohydrates, 10–35% protein, and 20–35% fat. Carbohydrates are the body's primary energy source; complex carbohydrates (whole grains, legumes, vegetables) are preferred over simple sugars. Protein is essential for muscle repair, immune function, and enzyme production; sources include lean meats, fish, eggs, dairy, legumes, tofu, and tempeh. Healthy fats (monounsaturated and polyunsaturated) support brain health and hormone production.
+
+## Nutrition — Micronutrients and Vitamins
+Key vitamins and minerals include: Vitamin A (vision, immune function — carrots, sweet potatoes), Vitamin C (immune support, collagen — citrus, bell peppers), Vitamin D (bone health, mood — sunlight, fortified foods, fatty fish), Vitamin B12 (nerve function — meat, dairy, fortified cereals), Iron (oxygen transport — red meat, spinach, lentils), Calcium (bone strength — dairy, almonds, broccoli), Magnesium (muscle/nerve function — nuts, seeds, whole grains), Zinc (immune function — meat, shellfish, legumes), and Potassium (blood pressure regulation — bananas, potatoes, avocados).
+
+## Nutrition — Hydration
+Water is essential for every bodily function including temperature regulation, nutrient transport, waste elimination, and joint lubrication. The general recommendation is 8–10 glasses (2–2.5 liters) per day, though needs vary based on activity level, climate, and health conditions. Signs of dehydration include dark urine, fatigue, dizziness, dry mouth, and headaches. Electrolytes (sodium, potassium, magnesium) are important during intense exercise or illness. Herbal teas, coconut water, and water-rich fruits (watermelon, cucumber) contribute to hydration.
+
+## Nutrition — Special Diets
+The Mediterranean diet emphasizes olive oil, fish, whole grains, fruits, vegetables, and moderate wine — it is associated with reduced cardiovascular risk and improved longevity. The DASH diet focuses on reducing sodium and increasing potassium-rich foods for blood pressure control. Plant-based diets (vegetarian, vegan) can provide complete nutrition with proper planning — ensure adequate B12, iron, omega-3, and protein intake. Intermittent fasting (16:8 or 5:2) may improve insulin sensitivity and support weight management.
+
+## Nutrition — Food Safety and Allergies
+Common food allergens include peanuts, tree nuts, milk, eggs, wheat, soy, fish, and shellfish. Cross-contamination must be avoided for individuals with severe allergies. Food intolerances (e.g., lactose intolerance, gluten sensitivity) differ from allergies and may cause digestive symptoms but not anaphylaxis. Proper food storage, cooking temperatures (poultry to 165°F/74°C), and handwashing prevent foodborne illness. Always check labels for allergen warnings.
+
+## Weight Management
+Healthy weight management involves a balanced approach of nutrition and exercise. BMI categories: underweight (<18.5), normal (18.5–24.9), overweight (25–29.9), obese (≥30). Sustainable weight loss is 0.5–1 kg per week through a 500–750 calorie daily deficit. Crash diets and extreme restriction can lead to muscle loss, nutrient deficiencies, and metabolic slowdown. Focus on whole foods, portion control, mindful eating, and regular physical activity. Waist circumference is also a key health indicator: above 102 cm (men) or 88 cm (women) increases disease risk.
+
+## Diabetes — Types and Management
+Type 1 diabetes is an autoimmune condition requiring insulin therapy. Type 2 diabetes is characterized by insulin resistance and is often managed through lifestyle changes, oral medications, and sometimes insulin. Prediabetes (fasting glucose 100–125 mg/dL or HbA1c 5.7–6.4%) can often be reversed with diet and exercise. Key management strategies: monitor blood glucose regularly, eat low glycemic index foods, exercise regularly, maintain healthy weight, manage stress, take medications as prescribed, and attend regular check-ups.
+
+## Diabetes — Dietary Guidelines
+For diabetes management: choose complex carbohydrates over simple sugars, pair carbs with protein or healthy fat to slow absorption, eat fiber-rich foods (vegetables, legumes, whole grains), limit refined carbohydrates and sugary beverages, practice portion control, eat at regular intervals, and monitor carbohydrate intake (typically 45–60g per meal). The glycemic index (GI) rates foods on how quickly they raise blood sugar; low-GI foods (≤55) are preferred.
+
+## Mental Health — Stress and Anxiety
+Chronic stress elevates cortisol levels, which can lead to weight gain, high blood pressure, impaired immune function, insomnia, and increased risk of depression. Effective stress management techniques include mindfulness meditation, deep breathing exercises (4-7-8 technique), progressive muscle relaxation, regular physical exercise, adequate sleep, social connection, time in nature, journaling, and limiting caffeine and screen time. If stress becomes overwhelming, seeking professional help from a therapist or counselor is recommended.
+
+## Mental Health — Depression
+Depression is characterized by persistent sadness, loss of interest, changes in appetite or sleep, fatigue, difficulty concentrating, and in severe cases, thoughts of self-harm. Risk factors include genetics, brain chemistry, trauma, chronic illness, and social isolation. Treatment approaches include psychotherapy (CBT, talk therapy), medication (SSRIs, SNRIs), lifestyle changes (exercise, sleep hygiene, social connection), and in some cases, brain stimulation therapies. If you or someone you know is struggling, please reach out to a mental health professional or crisis hotline.
+
+## Mental Health — Mindfulness and Meditation
+Mindfulness involves paying attention to the present moment without judgment. Regular meditation practice can reduce stress, improve focus, lower blood pressure, enhance emotional regulation, and improve sleep quality. Types of meditation include focused attention (concentrating on breath), body scan (progressive awareness of body parts), loving-kindness (cultivating compassion), and guided visualization. Start with 5–10 minutes daily and gradually increase duration. Apps and guided sessions can help beginners establish a practice.
+
+## Sleep Health
+Adults need 7–9 hours of sleep per night. Sleep is essential for memory consolidation, immune function, hormone regulation, and cellular repair. Poor sleep increases risk of obesity, diabetes, cardiovascular disease, and mental health disorders. Sleep hygiene tips: maintain a consistent sleep schedule, create a dark and cool bedroom environment (65–68°F/18–20°C), avoid screens 1 hour before bed, limit caffeine after 2 PM, avoid heavy meals before bedtime, exercise regularly (but not close to bedtime), and manage stress.
+
+## Sleep Disorders
+Common sleep disorders include insomnia (difficulty falling or staying asleep), sleep apnea (breathing interruptions during sleep, often with snoring), restless leg syndrome (uncomfortable urge to move legs), and narcolepsy (excessive daytime sleepiness). Sleep apnea is a significant cardiovascular risk factor and may require CPAP therapy. If you consistently struggle with sleep despite good sleep hygiene, consult a healthcare provider for evaluation.
+
+## Exercise — Types and Benefits
+The four main types of exercise are: aerobic (walking, running, cycling, swimming — improves cardiovascular health), strength training (weights, resistance bands — builds muscle, increases metabolism), flexibility (stretching, yoga — prevents injury, improves range of motion), and balance (tai chi, single-leg exercises — prevents falls, especially in older adults). The WHO recommends at least 150 minutes of moderate or 75 minutes of vigorous aerobic activity per week, plus strength training 2+ days per week.
+
+## Exercise — Safety and Precautions
+Before starting a new exercise program, consult your healthcare provider if you have chronic conditions, are over 45, or have been sedentary. Start slowly and gradually increase intensity. Warm up for 5–10 minutes before exercise and cool down afterward. Stay hydrated, wear appropriate footwear, and use proper form to prevent injury. Stop exercising if you experience chest pain, severe shortness of breath, dizziness, or irregular heartbeat. Rest days are essential for muscle recovery and preventing overtraining.
+
+## Respiratory Health
+Maintaining healthy lungs involves avoiding smoking and secondhand smoke, reducing exposure to air pollution and occupational hazards, practicing deep breathing exercises, staying physically active, maintaining good posture, getting vaccinated against flu and pneumonia, and washing hands regularly to prevent respiratory infections. Warning signs requiring medical attention include persistent cough (>3 weeks), coughing up blood, chronic shortness of breath, wheezing, and recurring respiratory infections.
+
+## Immune System Health
+The immune system protects against infections and diseases. Support it by eating a balanced diet rich in fruits, vegetables, and whole grains; getting adequate sleep (7–9 hours); exercising regularly; managing stress; staying hydrated; maintaining a healthy weight; avoiding smoking; limiting alcohol; and staying up-to-date on vaccinations. Key immune-supporting nutrients include Vitamin C, Vitamin D, Zinc, and probiotics (found in yogurt, kefir, and fermented foods).
+
+## Digestive Health
+A healthy digestive system requires adequate fiber intake (25–30g daily from fruits, vegetables, legumes, and whole grains), staying hydrated, regular physical activity, managing stress, eating slowly and chewing thoroughly, and avoiding excessive processed foods. Probiotics (yogurt, kefir, sauerkraut, kimchi) support gut microbiome diversity. Common digestive issues include acid reflux (GERD), irritable bowel syndrome (IBS), constipation, and food intolerances. Persistent digestive symptoms should be evaluated by a healthcare provider.
+
+## Women's Health
+Key health considerations for women include regular breast cancer screenings (mammograms starting at age 40–50), cervical cancer screening (Pap smears and HPV testing), bone density monitoring (osteoporosis risk increases after menopause), iron-rich diet (menstruation increases iron needs), calcium and vitamin D for bone health, prenatal vitamins during pregnancy, and mental health awareness (women have higher rates of anxiety and depression). Regular gynecological check-ups are essential for preventive care.
+
+## Men's Health
+Key health considerations for men include prostate health monitoring (PSA screening as recommended by provider), cardiovascular risk awareness (men have higher rates of heart disease), regular testicular self-exams, maintaining healthy testosterone levels through exercise and nutrition, bone health (osteoporosis can also affect men), mental health awareness (men are less likely to seek help for depression and anxiety), and regular health screenings for blood pressure, cholesterol, and blood sugar.
+
+## Aging and Senior Health
+As we age, health priorities shift to include fall prevention (balance exercises, home safety), bone health (calcium, vitamin D, weight-bearing exercise), cognitive health (mental stimulation, social engagement, physical activity), managing chronic conditions (medication adherence, regular monitoring), nutrition (increased protein needs, adequate hydration), vision and hearing care, and maintaining social connections. Regular comprehensive health check-ups become increasingly important.
+
+## First Aid Basics
+Basic first aid knowledge everyone should have: for cuts and wounds (clean, apply pressure, bandage), burns (cool with running water for 10+ minutes, do not apply ice), choking (Heimlich maneuver), CPR basics (call emergency services, chest compressions, rescue breaths), recognizing stroke signs (F.A.S.T. — Face drooping, Arm weakness, Speech difficulty, Time to call emergency), recognizing heart attack signs, and allergic reaction management (epinephrine for severe reactions, call emergency services).
+
+## Preventive Health Screenings
+Regular health screenings can catch problems early: blood pressure (at least annually), cholesterol (every 4–6 years, or more often if at risk), blood glucose (every 3 years after age 45), colorectal cancer screening (starting at age 45), mammogram (women, starting at age 40–50), Pap smear and HPV test (women, starting at age 21), prostate screening (men, discuss with doctor at age 50+), skin cancer checks, dental exams (every 6 months), and eye exams (every 1–2 years).
+
+## Yoga and Flexibility
+Yoga combines physical postures (asanas), breathing techniques (pranayama), and meditation for holistic well-being. Benefits include improved flexibility, strength, balance, stress reduction, better sleep, pain management, and enhanced mental clarity. Beginner-friendly poses include Mountain Pose (Tadasana), Child's Pose (Balasana), Downward Dog (Adho Mukha Svanasana), Warrior poses, and Savasana (relaxation). Start slowly, listen to your body, and consider joining a beginner class for proper alignment guidance.
+
+## Substance Use and Health
+Smoking is the leading cause of preventable death, increasing risk of lung cancer, heart disease, stroke, and respiratory diseases. Quitting at any age significantly reduces these risks. Excessive alcohol consumption (>1 drink/day women, >2/day men) increases risk of liver disease, cancer, heart disease, and mental health issues. Substance abuse affects physical health, mental well-being, relationships, and productivity. If struggling with addiction, seek professional help — treatment options include counseling, medication-assisted treatment, and support groups.
+
+## Skin Health
+Protect skin by using sunscreen (SPF 30+) daily, wearing protective clothing, avoiding tanning beds, staying hydrated, eating antioxidant-rich foods, and not smoking. Perform regular skin self-exams checking for the ABCDEs of melanoma: Asymmetry, Border irregularity, Color variation, Diameter >6mm, and Evolving appearance. Common skin conditions include acne, eczema, psoriasis, and rosacea. Consult a dermatologist for persistent skin concerns or suspicious moles.
+
+## Dental and Oral Health
+Oral health is linked to overall health — poor dental hygiene is associated with cardiovascular disease, diabetes complications, and respiratory infections. Brush teeth twice daily with fluoride toothpaste, floss daily, limit sugary foods and acidic drinks, avoid tobacco, visit the dentist every 6 months, and replace your toothbrush every 3–4 months. Warning signs include persistent bad breath, bleeding gums, tooth pain, loose teeth, and mouth sores that don't heal.
+
+## Ergonomics and Posture
+Poor posture and ergonomics can lead to back pain, neck strain, headaches, carpal tunnel syndrome, and decreased productivity. Desk ergonomics: monitor at eye level, arms at 90 degrees, feet flat on floor, lumbar support for lower back. Take breaks every 30–60 minutes to stand and stretch. For phone use, bring the device to eye level rather than looking down. Strengthen core muscles through exercises like planks and bridges to support good posture.
